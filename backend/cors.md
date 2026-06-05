@@ -1,88 +1,25 @@
-##  CORS Restricts at the Origin Level
+# CORS
 
-To prevent abuse, browsers enforce **CORS**.
+## 1. Cookies are automatic
 
-The browser checks the request's:
-
-```text
-Origin
-```
-
-which represents the website currently being viewed by the user.
-
-Before allowing a cross-origin request, the browser verifies whether that origin is permitted by the target server.
+Your browser blindly and automatically attaches cookies to requests based only on where the request is going, without checking who actually triggered it.
 
 ---
 
-## 3. Origin Allowlist
+## 2. CORS restricts at the Origin Level
 
-API servers maintain an allowlist of trusted origins.
-
-Example:
-
-API:
-
-```text
-api.mybank.com
-```
-
-Allowed origins:
-
-```text
-www.mybank.com
-mobile.mybank.com
-```
-
-Server configuration essentially says:
-
-> Only accept cross-origin requests from approved origins.
-
-### Allowed Request
-
-```text
-Origin: www.mybank.com
-```
-
-Result:
-
-```text
-Request Allowed ✅
-```
-
-### Blocked Request
-
-```text
-Origin: evil-hacker.com
-```
-
-Result:
-
-```text
-Request Blocked ❌
-```
-
-The browser sees that the origin is not on the server's allowlist and blocks the cross-origin request, helping protect the user from malicious websites.
+Because of the dangerous automatic behavior above, CORS forces the browser to check the "Origin" (the actual website the user is currently looking at) before letting a background request happen.
 
 ---
 
-## Quick Summary
+## 3. The "Listed Sites" Allowlist
 
-### Redis
+You hit the bullseye here. When an API server is set up, the developers literally write an allowlist of approved Origins.
 
-- In-memory database
-- Stores data in RAM
-- Extremely fast access
-- Used for:
-  - Caching
-  - Session storage
-  - OTP storage
-  - Rate limiting
-  - Job queues
+If you build an API at api.mybank.com, you configure it to say:
 
-### CORS
+> "Only accept cross-origin requests if they come from www.mybank.com or mobile.mybank.com."
 
-- Browsers automatically send cookies.
-- CORS checks the request's Origin.
-- Servers maintain an allowlist of trusted origins.
-- Requests from untrusted origins are blocked by the browser.
+If evil-hacker.com tries to trigger a request, the browser checks the API's allowlist.
 
+Since evil-hacker.com is not on the list, the browser's CORS security guard steps in and blocks the request entirely to protect the user.
