@@ -36,14 +36,6 @@ A computer requires both hardware to do the work and software to provide instruc
 * **Hardware:** Physical components such as CPU, RAM, Motherboard, SSD.
 * **Software:** Programs and instructions compiled into machine code.
 
-### The Interaction Process
-
-1. **Input:** You press `Shift + A` on a keyboard.
-2. **Hardware Interrupt:** The keyboard controller sends an interrupt signal.
-3. **Software Translation:** The OS driver converts the signal into character data.
-4. **Processing & Output:** The CPU processes the instruction and the GPU renders the character on the display.
-
----
 
 ## 3. The Central Processing Unit (CPU)
 
