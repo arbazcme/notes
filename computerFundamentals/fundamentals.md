@@ -8,27 +8,6 @@ A modern computer follows the **Von Neumann Architecture**, where programs and d
 
 It forms the backbone of modern education, business, and software engineering by executing millions of logical operations per second.
 
-### Classification of Computers
-
-Computers are categorized by their physical size, processing power, and foundational architecture.
-
-#### By Processing Power & Size
-
-* **Microcomputers / Personal Computers (PCs):** Designed for individual use. This includes Desktops and Laptops.
-* **Tablets & Smartphones:** Ultra-portable devices relying on touch interfaces and ARM-based processors.
-* **Servers:** Dedicated machines designed to host applications, databases, and network services.
-* **Mainframes:** Massive systems used by enterprises for bulk transaction processing.
-* **Supercomputers:** The most powerful systems used for scientific simulations and AI workloads.
-* **Embedded Systems:** Microcontrollers embedded into specialized devices such as cars, microwaves, and smartwatches.
-
-#### By Functionality
-
-* **Analog Computers:** Process continuous physical quantities.
-* **Digital Computers:** Process discrete binary values (0s and 1s).
-* **Hybrid Computers:** Combine analog and digital computation.
-
----
-
 ## 2. Hardware vs. Software & Their Interaction
 
 A computer requires both hardware to do the work and software to provide instructions.
