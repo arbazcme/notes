@@ -1,865 +1,568 @@
-Computer Fundamentals
+# Computer Fundamentals
 
----
+## Types of Software
 
-1. What is a Computer?
-
-A computer is an electronic device that accepts data as input, processes that data according to a set of instructions, stores the data and results, and produces meaningful output.
-
-In simple words:
-
-Input → Processing → Output
-
-Examples:
-
-Input| Processing| Output
-Keyboard| CPU processes data| Display
-Mouse Click| CPU interprets click| Action on screen
-Microphone| Audio processing| Sound recording
-
----
-
-Characteristics of a Computer
-
-1. Speed
-
-Computers perform millions or billions of operations per second.
-
-Example:
-
-- A modern CPU can execute billions of instructions every second.
-
-2. Accuracy
-
-Computers produce highly accurate results if the instructions and data are correct.
-
-3. Storage
-
-Computers can store large amounts of data.
-
-Example:
-
-- Documents
-- Photos
-- Videos
-- Databases
-
-4. Automation
-
-Once a program starts, the computer performs tasks automatically.
-
-5. Reliability
-
-Computers can repeatedly perform tasks without becoming tired.
-
-6. Versatility
-
-A single computer can perform many different tasks:
-
-- Programming
-- Gaming
-- Video Editing
-- Browsing
-- Machine Learning
-
----
-
-2. Basic Computer Organization
-
-A computer system consists of four major units.
-
-Input Unit
-     ↓
-CPU ↔ Memory Unit
-     ↓
-Output Unit
-
----
-
-Input Unit
-
-Used to provide data to the computer.
-
-Examples:
-
-- Keyboard
-- Mouse
-- Scanner
-- Webcam
-- Microphone
-
----
-
-Output Unit
-
-Used to display processed results.
-
-Examples:
-
-- Monitor
-- Printer
-- Speakers
-- Projector
-
----
-
-Memory Unit
-
-Stores data and instructions.
-
-Examples:
-
-- RAM
-- SSD
-- HDD
-
----
-
-CPU
-
-The Central Processing Unit is called the Brain of the Computer.
-
-Responsibilities:
-
-- Executes instructions
-- Performs calculations
-- Controls hardware
-- Coordinates all operations
-
----
-
-3. Hardware and Software
-
-A computer cannot function without both hardware and software.
-
----
-
-Hardware
-
-Physical components that can be touched.
-
-Examples:
-
-- CPU
-- RAM
-- SSD
-- Motherboard
-- Keyboard
-- Mouse
-- Monitor
-
----
-
+```text
 Software
+│
+├── System Software
+│     ├── Operating System
+│     ├── Device Drivers
+│     └── Compilers
+│
+└── Application Software
+      ├── Chrome
+      ├── WhatsApp
+      ├── Photoshop
+      └── Microsoft Word
+```
 
-A collection of instructions that tell hardware what to do.
+### System Software
 
-Examples:
+Acts as a bridge between **Hardware** and **Applications**.
 
-- Windows
-- Linux
-- Chrome
-- VS Code
-- Games
+**Purpose:** Manage and control hardware resources.
+
+**Examples:**
+
+* Operating Systems
+* Device Drivers
+* Compilers
 
 ---
 
-Types of Software
+### Application Software
 
-System Software
+Programs used directly by end users.
 
-Manages hardware resources.
+**Purpose:** Perform specific user tasks.
 
-Examples:
+**Examples:**
 
-- Operating Systems
-- Device Drivers
-- Compilers
+* Chrome
+* WhatsApp
+* Photoshop
+* Microsoft Word
 
 ---
 
+### Easy Way to Remember
+
+```text
+User
+  ↓
 Application Software
+  ↓
+System Software
+  ↓
+Hardware
+```
 
-Used by end users.
+**Application Software** helps the user.
 
-Examples:
+**System Software** helps the computer.
 
-- Chrome
-- WhatsApp
-- Photoshop
-- Microsoft Word
-
----
 
 How Hardware and Software Work Together
 
-Example:
+## How Hardware and Software Work Together
 
-You press the letter "A".
+### Example: Pressing the Letter "A"
 
-1. Keyboard sends signal.
-2. CPU receives signal.
-3. Software interprets signal.
-4. Character appears on screen.
+When you press **A**, the keyboard controller detects the key press and generates a **scan code**.
 
----
 
-4. Central Processing Unit (CPU)
+The keyboard then sends an **interrupt** to the CPU, notifying it that an input event has occurred.
 
-The CPU is responsible for executing program instructions.
 
-It continuously performs:
+The CPU temporarily pauses the current task and transfers control to the **Operating System**, specifically the **keyboard driver**.
 
-Fetch → Decode → Execute
 
----
+The keyboard driver translates the scan code into the character:
 
-Components of CPU
 
-Control Unit (CU)
+The OS then sends a keyboard event to the active application (e.g., Notepad).
 
-Responsible for controlling and coordinating all computer operations.
 
-Functions:
+The application decides to display **A** and requests the OS to update the screen.
 
-- Fetches instructions
-- Decodes instructions
-- Controls execution
 
-Think of it as a traffic police officer directing traffic.
+The OS forwards drawing instructions to the graphics driver/GPU, which renders the character and sends the updated image to the monitor.
 
----
+### Complete Flow
 
-Arithmetic Logic Unit (ALU)
+```text
+Press A
+   ↓
+Keyboard
+   ↓
+Interrupt
+   ↓
+CPU
+   ↓
+Operating System
+   ↓
+Keyboard Driver
+   ↓
+Application
+   ↓
+Operating System
+   ↓
+Graphics Driver / GPU
+   ↓
+Monitor
+   ↓
+A Appears
+```
 
-Responsible for calculations and logical decisions.
+### Key Point
 
-Arithmetic Operations:
+The **CPU does not create the interrupt**. The **keyboard hardware generates the interrupt**, and the CPU responds by allowing the Operating System to handle the event.
 
-- Addition
-- Subtraction
-- Multiplication
-- Division
+### Interview Answer
 
-Logical Operations:
+When a key is pressed, the keyboard generates a scan code and sends an interrupt to the CPU. The CPU transfers control to the Operating System, whose keyboard driver converts the scan code into a character. The OS sends the event to the active application, which requests a display update. The OS and GPU then render the character on the monitor.
 
-- AND
-- OR
-- NOT
-- Comparisons
-
-Example:
-
-10 + 20
-
-ALU performs the calculation.
 
 ---
+# Computer Fundamentals
 
-Registers
+## CPU (Central Processing Unit)
+
+The CPU executes program instructions using the:
+
+```text
+Fetch → Decode → Execute → Store
+```
+
+### Components
+
+| Component         | Purpose                                        |
+| ----------------- | ---------------------------------------------- |
+| Control Unit (CU) | Fetches, decodes, and controls execution       |
+| ALU               | Performs arithmetic and logical operations     |
+| Registers         | Smallest and fastest storage inside CPU        |
+| Cache             | High-speed memory storing frequently used data |
+
+
+
+
+### Registers
 
 Registers are tiny storage locations inside the CPU.
-
-Characteristics:
-
-- Fastest memory
-- Very small size
-- Directly accessed by CPU
 
 Uses:
 
 - Store instructions
-- Store addresses
+- Store memory addresses
 - Store temporary results
 
----
+They are the fastest memory in the computer because they are physically inside the CPU.
 
-Cache Memory
 
-Cache is a very high-speed memory located inside or near the CPU.
-
-Purpose:
-
-Reduce the time required to access frequently used data.
-
-Without Cache:
-
-CPU → RAM
-
-With Cache:
-
-CPU → Cache → RAM
-
-Result:
-
-- Faster performance
-- Reduced waiting time
-
----
-
-5. CPU Cores
+### CPU Cores
 
 A core is an independent processing unit inside the CPU.
 
----
+```text
+Single Core → One execution flow
 
-Single Core
-
-Can execute one task at a time.
-
----
-
-Multi-Core
-
-Contains multiple processing units.
+Multi-Core → Multiple execution flows
+```
 
 Examples:
 
-- Dual Core = 2 cores
-- Quad Core = 4 cores
-- Hexa Core = 6 cores
-- Octa Core = 8 cores
+* Dual Core → 2 Cores
+* Quad Core → 4 Cores
+* Hexa Core → 6 Cores
+* Octa Core → 8 Cores
 
 Benefits:
 
-- Better multitasking
-- Faster processing
-- Parallel execution
+* Better multitasking
+* Faster processing
+* Parallel execution
 
----
+Multiple cores allow multiple threads or tasks to execute simultaneously.
 
-6. Clock Speed
+### Clock Speed
 
-Clock speed indicates how many cycles a CPU performs every second.
+Number of CPU cycles executed per second.
 
-Measured in:
-
-Hertz (Hz)
-
-Common Units:
-
-MHz = Million Cycles/Second
-GHz = Billion Cycles/Second
+```text
+MHz = Million Cycles / Second
+GHz = Billion Cycles / Second
+```
 
 Example:
 
-3 GHz
-
-Means:
-
-3 Billion cycles per second
-
-Higher clock speed generally means faster execution.
+```text
+3 GHz = 3 Billion Cycles / Second
+```
 
 ---
 
-7. Fetch Decode Execute Cycle
+## Memory Hierarchy
 
-Every program runs through this cycle.
-
----
-
-Step 1: Fetch
-
-CPU fetches instruction from memory.
-
-Example:
-
-Add 5 and 10
-
-Instruction is fetched from RAM.
-
----
-
-Step 2: Decode
-
-CPU determines what operation must be performed.
-
-Example:
-
-Addition
-
----
-
-Step 3: Execute
-
-ALU performs operation.
-
-5 + 10 = 15
-
----
-
-Step 4: Store
-
-Result is stored in memory or register.
-
----
-
-8. Memory Hierarchy
-
-Different memories provide different speed and storage capacities.
-
-Hierarchy:
-
+```text
 Registers
-↓
-Cache
-↓
-RAM
-↓
+    ↓
+Cache (SRAM)
+    ↓
+RAM (DRAM)
+    ↓
 SSD / HDD
+```
+
+Higher = Faster, Smaller, Expensive
+
+Lower = Slower, Larger, Cheaper
+
+### cache
+Purpose:
+
+Store frequently used data so the CPU does not need to access slower RAM repeatedly.
+
+Without Cache:
+
+CPU ↔ RAM
+
+With Cache:
+
+CPU ↔ Cache ↔ RAM
+
+Result:
+
+- Faster execution
+- Reduced waiting time
+
 
 ---
 
-Why Memory Hierarchy Exists
+## Primary vs Secondary Memory
 
-Fast memory is expensive.
-
-Large memory is slower.
-
-Computers combine multiple memory types to achieve:
-
-- High speed
-- Large storage
-- Low cost
-
----
-
-9. Primary Memory
+### Primary Memory
 
 Directly accessible by CPU.
 
-Characteristics:
-
-- Fast
-- Expensive
-- Small capacity
-
 Examples:
 
-- Registers
-- Cache
-- RAM
+* Registers
+* Cache
+* RAM
 
----
+Characteristics:
 
-10. Secondary Memory
+* Fast
+* Expensive
+* Smaller Capacity
+
+### Secondary Memory
 
 Permanent storage.
 
-Characteristics:
-
-- Slower
-- Larger capacity
-- Cheaper
-
 Examples:
 
-- SSD
-- HDD
-- USB Drive
+* SSD
+* HDD
+* USB Drives
+
+Characteristics:
+
+* Slower
+* Cheaper
+* Larger Capacity
+
+Data stored in SSD/HDD cannot be directly executed by the CPU.
+
+It must first be loaded into RAM.
+
+SSD/HDD → RAM → CPU
 
 ---
 
-11. RAM
+## RAM
 
-RAM stands for Random Access Memory.
-
-Used while programs are running.
+**RAM (Random Access Memory)** stores data currently being used by programs.
 
 Characteristics:
 
-- Volatile
-- Read and Write
-- Fast
+* Volatile
+* Read/Write
+* Fast
 
 Example:
 
-When Chrome is running, it loads data into RAM.
+When Chrome runs, its data is loaded into RAM.
 
----
+### Types of RAM
 
-Types of RAM
+#### SRAM (Static RAM)
 
-SRAM
+#### DRAM (Dynamic RAM)
 
-Static RAM
+### SRAM vs DRAM
 
-Characteristics:
+| Feature | SRAM       | DRAM        |
+| ------- | ---------- | ----------- |
+| Storage | Flip-Flops | Capacitors  |
+| Refresh | No         | Yes         |
+| Speed   | Faster     | Slower      |
+| Cost    | Expensive  | Cheap       |
+| Usage   | Cache      | Main Memory |
 
-- Faster
+
+### Why is Cache Faster than RAM?
+
+Cache uses SRAM, while main memory uses DRAM.
+
+SRAM:
+- Uses transistor flip-flops
+- No refresh required
+- Very fast
 - Expensive
-- Used in Cache
+
+DRAM:
+- Uses capacitors
+- Requires refresh operations
+- Slower but cheaper
+
+Since SRAM does not require refreshing and is physically closer to the CPU, cache is much faster than RAM.
 
 ---
 
-DRAM
+## ROM
 
-Dynamic RAM
-
-Characteristics:
-
-- Slower
-- Cheaper
-- Used as main memory
-
----
-
-12. ROM
-
-ROM stands for Read Only Memory.
-
-Characteristics:
-
-- Non-Volatile
-- Permanent
-- Stores firmware
+**ROM (Read Only Memory)** is non-volatile memory that stores firmware.
 
 Example:
 
-Computer startup instructions.
+* BIOS / UEFI
+* Startup Instructions
+
+### Types
+
+* PROM → Programmable once
+* EPROM → Erased using UV light
+* EEPROM → Electrically erasable and rewritable
 
 ---
 
-Types of ROM
+## Storage Devices
 
-PROM
-
-Programmable once.
-
-EPROM
-
-Can be erased using UV light.
-
-EEPROM
-
-Can be electrically erased and rewritten.
-
----
-
-13. RAM vs ROM
-
-Feature| RAM| ROM
-Volatile| Yes| No
-Read/Write| Yes| Mostly Read
-Speed| Faster| Slower
-Purpose| Temporary Storage| Permanent Storage
-
----
-
-14. Storage Devices
-
-Storage devices permanently store data.
-
-Examples:
-
-- HDD
-- SSD
-- USB Drives
-
----
-
-15. HDD
-
-Hard Disk Drive.
+### HDD (Hard Disk Drive)
 
 Stores data on magnetic rotating disks.
 
-Advantages:
+**Pros**
 
-- Cheap
-- Large capacity
+* Cheap
+* Large Capacity
 
-Disadvantages:
+**Cons**
 
-- Slower
-- Mechanical parts
-- More power consumption
+* Slower
+* Mechanical Parts
 
----
-
-16. SSD
-
-Solid State Drive.
+### SSD (Solid State Drive)
 
 Stores data using flash memory.
 
-Advantages:
+**Pros**
 
-- Faster
-- More reliable
-- Less power consumption
+* Faster
+* Reliable
+* Lower Power Consumption
 
-Disadvantages:
+**Cons**
 
-- More expensive
+* More Expensive
 
----
+### HDD vs SSD
 
-17. HDD vs SSD
-
-Feature| HDD| SSD
-Speed| Slow| Fast
-Moving Parts| Yes| No
-Reliability| Lower| Higher
-Cost| Cheaper| Costlier
-
----
-
-18. Data Representation
-
-Computers store everything in binary form.
+| Feature      | HDD     | SSD      |
+| ------------ | ------- | -------- |
+| Speed        | Slow    | Fast     |
+| Moving Parts | Yes     | No       |
+| Reliability  | Lower   | Higher   |
+| Cost         | Cheaper | Costlier |
 
 ---
 
-Bit
+## Data Representation
+
+### Bit
 
 Smallest unit of data.
 
-Values:
-
+```text
 0 or 1
+```
+
+### Byte
+
+```text
+1 Byte = 8 Bits
+```
+
+### Storage Units
+
+| Unit | Value      |
+| ---- | ---------- |
+| Byte | 8 Bits     |
+| KB   | 1024 Bytes |
+|      |            |
 
 ---
 
-Nibble
+## Number Systems
 
-4 Bits
+| System      | Base | Digits   |
+| ----------- | ---- | -------- |
+| Decimal     | 10   | 0-9      |
+| Binary      | 2    | 0,1      |
+| Octal       | 8    | 0-7      |
+| Hexadecimal | 16   | 0-9, A-F |
 
----
+### Example
 
-Byte
+```text
+Decimal 10 = Binary 1010
+```
 
-8 Bits
-
----
-
-Storage Units
-
-Unit| Value
-1 Byte| 8 Bits
-1 KB| 1024 Bytes
-1 MB| 1024 KB
-1 GB| 1024 MB
-1 TB| 1024 GB
-
----
-
-19. Number Systems
-
-Computers understand binary numbers.
-
----
-
-Decimal System
-
-Base:
-
-10
-
-Digits:
-
-0-9
-
-Example:
-
-125
-
----
-
-Binary System
-
-Base:
-
-2
-
-Digits:
-
-0,1
-
-Example:
-
-1010
-
----
-
-Octal System
-
-Base:
-
-8
-
-Digits:
-
-0-7
-
----
-
-Hexadecimal System
-
-Base:
-
-16
-
-Digits:
-
-0-9, A-F
-
-Example:
-
-2A
-
----
-
-20. Decimal to Binary Conversion
-
-Example:
-
-Convert 10 to Binary.
-
-10 ÷ 2 = 5 remainder 0
-5 ÷ 2 = 2 remainder 1
-2 ÷ 2 = 1 remainder 0
-1 ÷ 2 = 0 remainder 1
-
-Read from bottom to top:
-
-1010
-
----
-
-21. Binary to Decimal Conversion
-
-Example:
-
+```text
 1010₂
 
-Calculation:
+= (1×2³)+(0×2²)+(1×2¹)+(0×2⁰)
 
-(1×2³)+(0×2²)+(1×2¹)+(0×2⁰)
+= 8+0+2+0
 
-8 + 0 + 2 + 0 = 10
+= 10
+```
 
 ---
 
-22. Program vs Process
+## Program vs Process
 
-Program
+### Program
 
-A program is a set of instructions stored on disk.
+A set of instructions stored on disk.
 
 Examples:
 
-- Chrome.exe
-- VSCode.exe
+* Chrome.exe
+* VSCode.exe
 
-Passive entity.
+### Process
 
----
-
-Process
-
-A process is a program currently being executed.
-
-Active entity.
+A program currently being executed.
 
 Example:
 
-Opening Chrome creates a running process.
+Opening Chrome creates a process.
+
+| Program        | Process           |
+| -------------- | ----------------- |
+| Stored on Disk | Running in Memory |
+| Passive        | Active            |
+| Static         | Dynamic           |
 
 ---
 
-Key Difference
-
-Program| Process
-Stored on Disk| Running in Memory
-Passive| Active
-Static| Dynamic
-
----
-
-23. Compiler vs Interpreter
+## Compiler vs Interpreter
 
 Programs must be translated into machine code.
 
----
+### Compiler
 
-Compiler
-
-Translates entire source code before execution.
+Translates entire program before execution.
 
 Examples:
 
-- C
-- C++
+* C
+* C++
 
-Advantages:
+**Pros:** Faster execution
 
-- Faster execution
-- Better optimization
+**Cons:** Compilation required
 
-Disadvantages:
+### Interpreter
 
-- Compilation time required
-
----
-
-Interpreter
-
-Translates line-by-line.
+Translates code line-by-line.
 
 Examples:
 
-- Python
-- JavaScript
+* Python
+* JavaScript
 
-Advantages:
+**Pros:** Easier debugging
 
-- Easier debugging
+**Cons:** Slower execution
 
-Disadvantages:
+### Java Approach
 
-- Slower execution
-
----
-
-Java Approach
-
-Java uses both.
-
+```text
 Source Code
-↓
+     ↓
 Compiler
-↓
+     ↓
 Bytecode
-↓
+     ↓
 JVM
-↓
+     ↓
 Machine Code
+```
 
-This makes Java platform independent.
+This makes Java platform-independent.
+# Why is Java Platform Independent?
+
+## C++
+
+```text
+Source Code
+    ↓
+Compiler
+    ↓
+Windows Machine Code
+```
+
+The compiler generates machine code specific to the operating system.
+
+A Windows executable works only on Windows.
 
 ---
 
-Quick Interview Questions
+## Java
 
-1. What is a computer?
-2. Difference between hardware and software?
-3. What is CPU?
-4. Explain ALU and CU.
-5. What are registers?
-6. What is cache memory?
-7. Why is cache faster than RAM?
-8. What is clock speed?
-9. What is a CPU core?
-10. Explain Fetch Decode Execute Cycle.
-11. Difference between RAM and ROM?
-12. Difference between HDD and SSD?
-13. What is primary memory?
-14. What is secondary memory?
-15. What is a bit and byte?
-16. What is binary?
-17. Convert 10 to binary.
-18. Convert 1010 to decimal.
-19. Difference between program and process?
-20. Difference between compiler and interpreter?
+```text
+Source Code
+    ↓
+Java Compiler (javac)
+    ↓
+Bytecode (.class)
+    ↓
+JVM
+    ↓
+Machine Code
+```
+
+Java compiler does **not** generate Windows/Linux/Mac machine code directly.
+
+Instead, it generates **Bytecode** (`.class` files).
+
+The **JVM (Java Virtual Machine)** on each operating system converts the bytecode into machine code that the system understands.
+
+```text
+Same Bytecode
+      ↓
+Windows JVM → Runs
+Linux JVM   → Runs
+Mac JVM     → Runs
+```
+
+## Conclusion
+
+Java is called **Platform Independent** because the same compiled bytecode can run on any operating system that has a JVM.
+
+**Write Once, Run Anywhere (WORA)** is the main principle behind Java's platform independence.
+
