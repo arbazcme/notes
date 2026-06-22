@@ -43,7 +43,7 @@ Understanding what threads share and what they keep private is the absolute core
 #### 🔒 Private to Each Thread (Thread-Local)
 To function independently, every thread gets its own isolated memory for execution:
 * **The Stack:** Stores local variables and function calls. (If Thread A declares `int x = 5;` inside a function, Thread B cannot see or touch it).
-* **Program Counter (PC):** Keeps track of the exact line of code *this specific thread* is executing.
+* **Program Counter (PC):** The Program Counter (PC) stores the memory address of the next instruction to be fetched and executed.
 * **Registers:** The immediate data the CPU is calculating for this thread right now.
 
 #### 🤝 Shared Among All Threads
