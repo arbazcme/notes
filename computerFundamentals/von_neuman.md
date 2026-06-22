@@ -105,7 +105,7 @@ Von Neumann transformed computers from task-specific machines into general-purpo
 
 ### My Summary :
 
-So basically insted of rewiring hardware , let us make a general purpsoe system , give a cpu, provide instructions in form of program , make it execute the task ! so we provide the instructions + data related (loaded in same memory in ram )to it to cpu  to execute ? 
+So basically insted of rewiring hardware for tasks, let us make a general purpose system , introduce a processing unit a cpu, generally we store data in memory right, so this concept tells us to store programs (instructions) along side with general data, so now to perform a task no need to touch hardware , we can load a program into memory and execute the task. 
 
 
 
