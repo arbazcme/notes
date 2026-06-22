@@ -29,6 +29,37 @@ A thread does not contain hardware like an ALU or Control Unit. It is a **softwa
 
 **CPU Core → Executes Instructions Using That Context**
 
+### The Hardware-to-Software Bridge: The TCB
+
+How does the Operating System manage software threads without physical hardware? Through the **Thread Control Block (TCB)**.
+
+Every thread has a data structure called a TCB stored in memory. When a thread is *paused*, the OS saves its exact state (Registers, Program Counter) into this TCB. 
+During a **Context Switch**, the OS Scheduler selects the next thread, retrieves its TCB, and loads those saved values directly into the *physical* CPU registers. The hardware then resumes execution exactly where the thread left off.
+
+### Thread Memory Architecture: Private vs. Shared
+
+Understanding what threads share and what they keep private is the absolute core of concurrent backend programming.
+
+#### 🔒 Private to Each Thread (Thread-Local)
+To function independently, every thread gets its own isolated memory for execution:
+* **The Stack:** Stores local variables and function calls. (If Thread A declares `int x = 5;` inside a function, Thread B cannot see or touch it).
+* **Program Counter (PC):** Keeps track of the exact line of code *this specific thread* is executing.
+* **Registers:** The immediate data the CPU is calculating for this thread right now.
+
+#### 🤝 Shared Among All Threads
+Because threads live inside the same process, they share the heavy-duty memory segments. This makes thread communication incredibly fast and lightweight compared to Inter-Process Communication (IPC).
+* **The Heap:** Dynamic memory (e.g., objects created with `new` in C++ or Java). Any thread with the correct pointer/reference can read and write to this memory.
+* **The Data Segment:** Global and static variables. If Thread A updates a global variable, Thread B instantly sees the change.
+* **The Code Segment (Text):** The actual compiled machine code. All threads run the same underlying program.
+
+### The Danger: Race Conditions
+
+Because threads share the Heap and Data segments, they are highly efficient. However, this shared access introduces the biggest challenge in Operating Systems and Low-Level Design: **The Race Condition**.
+
+If Thread A and Thread B both attempt to modify a shared global variable (e.g., `count++`) simultaneously, the OS scheduler might swap them unpredictably mid-calculation. They read, overwrite, and corrupt each other's data, resulting in bugs that only happen a fraction of the time and are incredibly difficult to reproduce. 
+
+*To prevent this, the OS uses Process Synchronization mechanisms (like Mutexes and Semaphores) to lock shared memory so only one thread can modify it at a time.*
+
 ---
 # SRAM vs DRAM
 
