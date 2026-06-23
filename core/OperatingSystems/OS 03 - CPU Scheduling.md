@@ -593,3 +593,834 @@ Swap Process
 ```
 
 ---
+
+# 5. Scheduling Queues
+
+Processes move through various queues during their lifetime.
+
+Think of queues as waiting lines managed by the OS.
+
+---
+
+# Why Queues Exist?
+
+Suppose:
+
+```text
+100 Processes
+```
+
+want CPU.
+
+CPU can run:
+
+```text
+Only One Process Per Core
+```
+
+Therefore processes must wait somewhere.
+
+OS stores them in queues.
+
+---
+
+# Main Scheduling Queues
+
+```text
+Job Queue
+Ready Queue
+Device Queue
+```
+
+---
+
+# Job Queue
+
+Contains:
+
+```text
+All Processes In System
+```
+
+including:
+
+```text
+New
+Ready
+Waiting
+Running
+```
+
+Think:
+
+```text
+Every Process Known To OS
+```
+
+belongs to Job Queue.
+
+---
+
+# Example
+
+```text
+Chrome
+VS Code
+Spotify
+Game
+Notepad
+```
+
+All belong to:
+
+```text
+Job Queue
+```
+
+---
+
+# Ready Queue
+
+Most important queue.
+
+Contains:
+
+```text
+Processes Ready To Execute
+```
+
+Requirements:
+
+```text
+Present In RAM
+Not Waiting For I/O
+Need CPU
+```
+
+---
+
+# Example
+
+```text
+Ready Queue
+
+Chrome
+VS Code
+Spotify
+```
+
+Scheduler selects one.
+
+---
+
+# Device Queue
+
+Contains:
+
+```text
+Processes Waiting For I/O
+```
+
+Example:
+
+```text
+Disk Queue
+Printer Queue
+Network Queue
+```
+
+---
+
+# Example
+
+Chrome requests:
+
+```text
+Read File
+```
+
+Process moves:
+
+```text
+Running
+      ↓
+Device Queue
+```
+
+until I/O completes.
+
+---
+
+# Queue Flow
+
+```text
+Job Queue
+     ↓
+Ready Queue
+     ↓
+Running
+     ↓
+Device Queue
+     ↓
+Ready Queue
+     ↓
+Running
+```
+
+---
+
+# Real Example
+
+```text
+Open Chrome
+      ↓
+Job Queue
+
+Loaded Into RAM
+      ↓
+Ready Queue
+
+Gets CPU
+      ↓
+Running
+
+Needs Internet Data
+      ↓
+Device Queue
+
+Data Arrives
+      ↓
+Ready Queue
+
+Gets CPU Again
+      ↓
+Running
+```
+
+---
+
+# 6. Scheduling Criteria
+
+Question:
+
+```text
+How Do We Decide
+Whether A Scheduling Algorithm Is Good?
+```
+
+Answer:
+
+Using scheduling criteria.
+
+---
+
+# Main Criteria
+
+```text
+CPU Utilization
+Throughput
+Turnaround Time
+Waiting Time
+Response Time
+Fairness
+```
+
+---
+
+# CPU Utilization
+
+Definition:
+
+```text
+Percentage Of Time
+CPU Is Busy
+```
+
+---
+
+# Formula
+
+```text
+CPU Utilization
+
+=
+CPU Busy Time
+---------------
+Total Time
+× 100
+```
+
+---
+
+# Example
+
+Suppose:
+
+```text
+CPU Busy = 90 Seconds
+
+Total Time = 100 Seconds
+```
+
+Then:
+
+```text
+90%
+```
+
+utilization.
+
+---
+
+# Goal
+
+Keep CPU busy as much as possible.
+
+Higher:
+
+```text
+Better
+```
+
+---
+
+# Throughput
+
+Definition:
+
+```text
+Number Of Processes
+Completed Per Unit Time
+```
+
+---
+
+# Example
+
+Suppose:
+
+```text
+10 Processes
+```
+
+finish in:
+
+```text
+1 Minute
+```
+
+Throughput:
+
+```text
+10 Processes/Minute
+```
+
+---
+
+# Goal
+
+Higher Throughput
+
+```text
+Better
+```
+
+---
+
+# Turnaround Time
+
+Interview Favorite.
+
+Definition:
+
+```text
+Total Time Taken
+From Submission
+To Completion
+```
+
+---
+
+# Formula
+
+```text
+Turnaround Time
+
+=
+Completion Time
+-
+Arrival Time
+```
+
+---
+
+# Example
+
+Process arrives:
+
+```text
+10:00
+```
+
+Finishes:
+
+```text
+10:20
+```
+
+Turnaround Time:
+
+```text
+20 Minutes
+```
+
+---
+
+# Includes Everything
+
+```text
+Waiting Time
+
++
+CPU Time
+
++
+I/O Time
+```
+
+---
+
+# Waiting Time
+
+Definition:
+
+```text
+Time Spent Waiting
+In Ready Queue
+```
+
+---
+
+# Formula
+
+```text
+Waiting Time
+
+=
+Turnaround Time
+-
+CPU Burst Time
+```
+
+---
+
+# Example
+
+Process:
+
+```text
+Needs CPU For 5 Seconds
+```
+
+Waited:
+
+```text
+15 Seconds
+```
+
+before execution.
+
+Waiting Time:
+
+```text
+15 Seconds
+```
+
+---
+
+# Goal
+
+Lower Waiting Time
+
+```text
+Better
+```
+
+---
+
+# Response Time
+
+Important for interactive systems.
+
+Definition:
+
+```text
+Time Between Request
+And First Response
+```
+
+---
+
+# Formula
+
+```text
+Response Time
+
+=
+First CPU Allocation
+-
+Arrival Time
+```
+
+---
+
+# Example
+
+User clicks:
+
+```text
+Chrome
+```
+
+Application starts responding after:
+
+```text
+1 Second
+```
+
+Response Time:
+
+```text
+1 Second
+```
+
+---
+
+# Difference
+
+Turnaround Time:
+
+```text
+Start
+↓
+Finish
+```
+
+Response Time:
+
+```text
+Start
+↓
+First Response
+```
+
+---
+
+# Fairness
+
+Definition:
+
+```text
+Every Process Gets
+Reasonable CPU Time
+```
+
+---
+
+# Bad Scheduler
+
+```text
+Chrome Always Runs
+
+VS Code Never Runs
+```
+
+Not fair.
+
+---
+
+# Good Scheduler
+
+CPU distributed reasonably.
+
+---
+
+# Ideal Scheduler Wants
+
+```text
+High CPU Utilization
+
+High Throughput
+
+Low Waiting Time
+
+Low Turnaround Time
+
+Low Response Time
+
+Good Fairness
+```
+
+---
+
+# 7. Preemptive vs Non-Preemptive Scheduling
+
+Most Important Foundation Before Algorithms.
+
+---
+
+# Non-Preemptive Scheduling
+
+Definition:
+
+```text
+Once CPU Is Given
+
+Process Keeps CPU
+
+Until It Finishes
+Or Waits For I/O
+```
+
+OS cannot forcibly take CPU away.
+
+---
+
+# Example
+
+```text
+Process A Starts
+```
+
+Needs:
+
+```text
+10 Seconds
+```
+
+CPU.
+
+Even if:
+
+```text
+Process B Arrives
+```
+
+B must wait.
+
+---
+
+# Execution
+
+```text
+AAAAAAAAAA
+BBBB
+CCCC
+```
+
+---
+
+# Advantages
+
+```text
+Simple
+
+Low Context Switching
+
+Easy To Implement
+```
+
+---
+
+# Disadvantages
+
+```text
+Poor Responsiveness
+
+Long Waiting Times
+```
+
+---
+
+# Example
+
+Suppose:
+
+```text
+Video Rendering
+```
+
+starts first.
+
+Needs:
+
+```text
+30 Seconds
+```
+
+Chrome opened after.
+
+Chrome waits:
+
+```text
+30 Seconds
+```
+
+Bad user experience.
+
+---
+
+# Preemptive Scheduling
+
+Definition:
+
+```text
+OS Can Take CPU Away
+From Running Process
+```
+
+---
+
+# Example
+
+```text
+Process A Running
+```
+
+Timer expires.
+
+OS interrupts:
+
+```text
+Process A
+```
+
+and runs:
+
+```text
+Process B
+```
+
+---
+
+# Execution
+
+```text
+AAA
+BBB
+AA
+CC
+BB
+```
+
+---
+
+# Advantages
+
+```text
+Better Responsiveness
+
+Better Fairness
+
+Interactive Systems Work Well
+```
+
+---
+
+# Disadvantages
+
+```text
+More Context Switching
+
+More Overhead
+
+More Complex
+```
+
+---
+
+# Why Modern OS Use Preemptive Scheduling?
+
+Imagine:
+
+```text
+Chrome
+VS Code
+Spotify
+Game
+```
+
+Without preemption:
+
+```text
+One Process Could Monopolize CPU
+```
+
+System feels frozen.
+
+Preemption prevents this.
+
+---
+
+# Examples
+
+Non-Preemptive:
+
+```text
+FCFS
+Non-Preemptive SJF
+```
+
+Preemptive:
+
+```text
+Round Robin
+
+SRTF
+
+Preemptive Priority
+```
+
+---
+
+# Quick Comparison
+
+| Feature              | Non-Preemptive | Preemptive |
+| -------------------- | -------------- | ---------- |
+| CPU Taken Away By OS | No             | Yes        |
+| Responsiveness       | Poor           | Better     |
+| Context Switching    | Less           | More       |
+| Complexity           | Simple         | Complex    |
+| Fairness             | Lower          | Higher     |
+
+---
+
+# End Of Part 1
+
+You now understand:
+
+```text
+Why Scheduling Exists
+
+CPU Burst
+
+I/O Burst
+
+Schedulers
+
+Queues
+
+Scheduling Criteria
+
+Preemptive vs Non-Preemptive
+```
+
+Next Part:
+
+```text
+FCFS
+SJF
+SRTF
+Priority
+Round Robin
+```
