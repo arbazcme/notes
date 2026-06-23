@@ -1183,6 +1183,7 @@ Or Waits For I/O
 ```
 
 OS cannot forcibly take CPU away.
+Process can take a cpu without giving control back to os ! (Not good)
 
 ---
 
@@ -1341,6 +1342,7 @@ More Complex
 
 # Why Modern OS Use Preemptive Scheduling?
 
+
 Imagine:
 
 ```text
@@ -1395,32 +1397,19 @@ Preemptive Priority
 
 ---
 
-# End Of Part 1
+# Scheduling Formula Cheat Sheet
 
-You now understand:
+| Metric                | Formula                                    |
+| --------------------- | ------------------------------------------ |
+| Turnaround Time (TAT) | Completion Time - Arrival Time             |
+| Waiting Time (WT)     | Turnaround Time - CPU Burst Time           |
+| Response Time (RT)    | First CPU Allocation Time - Arrival Time   |
+| Throughput            | Number of Completed Processes / Total Time |
+| CPU Utilization       | (CPU Busy Time / Total Time) × 100         |
 
-```text
-Why Scheduling Exists
+---
 
-CPU Burst
 
-I/O Burst
+Conceptually OS textbooks discuss process scheduling.
 
-Schedulers
-
-Queues
-
-Scheduling Criteria
-
-Preemptive vs Non-Preemptive
-```
-
-Next Part:
-
-```text
-FCFS
-SJF
-SRTF
-Priority
-Round Robin
-```
+Modern operating systems generally schedule threads because threads are the actual execution units.
