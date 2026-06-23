@@ -1,4 +1,58 @@
-# Process States, PCB, Memory Layout, Stack, Heap, Suspend States (Detailed Notes)
+# OS 01 - Process, PCB, Memory Layout and Process States
+
+## Navigation
+
+### Process Fundamentals
+- [1. What is a Process?](#1-what-is-a-process)
+- [2. PCB (Process Control Block)](#2-pcb-process-control-block)
+- [3. Process Number (PID)](#3-process-number-pid)
+- [4. Process State](#4-process-state)
+
+### Process Execution Context
+- [5. Program Counter (PC)](#5-program-counter-pc)
+- [6. Registers in PCB](#6-registers-in-pcb)
+- [7. Memory Information in PCB](#7-memory-information-in-pcb)
+- [8. Open File List](#8-open-file-list)
+
+### Process Memory Layout
+- [9. Process Memory Layout](#9-process-memory-layout)
+- [10. Text Segment](#10-text-segment)
+- [11. Data Segment](#11-data-segment)
+- [12. Heap Segment](#12-heap-segment)
+- [13. Stack Segment](#13-stack-segment)
+- [Heap vs Stack](#heap-vs-stack)
+- [Stack vs Heap (Simple Understanding)](#stack-vs-heap-simple-understanding)
+
+### Process States
+- [14. Process State Diagram](#14-process-state-diagram)
+- [15. NEW State](#15-new-state)
+- [16. READY State](#16-ready-state)
+- [17. RUNNING State](#17-running-state)
+- [18. READY → RUNNING](#18-ready--running)
+- [19. RUNNING → READY](#19-running--ready)
+- [20. WAIT/BLOCK State](#20-waitblock-state)
+- [21. RUNNING → WAIT](#21-running--wait)
+- [22. WAIT → READY](#22-wait--ready)
+- [23. TERMINATED](#23-terminated)
+
+### Suspend States & Swapping
+- [24. Why Suspend States Exist?](#24-why-suspend-states-exist)
+- [25. Suspended Ready State](#25-suspended-ready-state)
+- [26. Suspended Wait State](#26-suspended-wait-state)
+
+### Context Switching
+- [27. Context Switching](#27-context-switching)
+- [28. Relation Between PCB and States](#28-relation-between-pcb-and-states)
+- [Final Intuition](#final-intuition)
+
+### Appendix - Interview Doubts & Clarifications
+- [Q1. Program Counter: PCB or TCB?](#q1-does-the-program-counter-belong-to-pcb-or-tcb)
+- [Q2. Process vs Thread Context Switching](#q2-does-context-switching-happen-between-processes-or-threads)
+- [Q3. Where is a Suspended Process Stored?](#q3-when-a-process-is-suspended-where-is-it-stored)
+- [Q4. Suspended Process vs Program](#q4-is-the-suspended-process-converted-back-into-a-program)
+- [Q5. What Gets Moved to Disk?](#q5-what-exactly-gets-moved-to-disk)
+- [Q6. How Does OS Find It Again?](#q6-if-process-is-on-disk-how-can-os-find-it-again)
+- [Q7. Thread Data Storage (TCB, PC, Registers, Stack)](#q7-where-are-threads-stored-thread-data-storage-tcb-registers-pc-and-stack)
 
 ---
 
@@ -1493,7 +1547,7 @@ Cache naturally updates based on memory access
 ```
 
 
-Q3. When a Process is Suspended, Where is it Stored?
+# Q3. When a Process is Suspended, Where is it Stored?
 ```
 
 Answer:
