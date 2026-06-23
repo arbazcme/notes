@@ -67,6 +67,26 @@ PCB
 └── Accounting Information
 ```
 
+## Process Control Block (PCB) Storage
+
+The **PCB** is stored in **kernel space** inside the physical RAM. 
+
+### Physical RAM Layout
+
+* **User Space:** The area of RAM where your everyday apps (like browsers or games) run.
+* **Kernel Space:** The area of RAM reserved exclusively for the Operating System core.
+
+> **Key Takeaway:** Because the PCB lives in kernel space, **only the OS can access it**! This keeps critical process data safe from user applications.
+
+### When the OS Accesses the PCB
+
+The OS switches to kernel mode and accesses the PCB during these critical operations:
+
+* **Context Switching:** Saving old process data and loading the next process.
+* **State Changes:** Moving a process between Running, Ready, or Waiting states.
+* **CPU Scheduling:** Checking process priorities to choose what runs next.
+* **Resource Management:** Tracking open files, memory limits, and I/O devices.
+
 ---
 
 # 3. Process Number (PID)
@@ -384,6 +404,18 @@ Otherwise:
 ```text
 Memory Leak
 ```
+
+### Why Stack is Fast 🚀
+- Allocation/deallocation only moves the Stack Pointer (SP).
+- No searching for free memory blocks is required.
+- Data is usually contiguous, giving good CPU cache locality.
+- Very little memory-management overhead.
+
+### Why Heap is Slow 🐢
+- Allocator must search for a suitable free block.
+- Metadata and free-space bookkeeping must be maintained.
+- Fragmentation can occur over time.
+- Heap objects may be scattered in memory, causing more cache misses.
 
 ---
 
@@ -1723,3 +1755,18 @@ PCB remains tracked by OS
 ```
 
 
+# Q7. Where are Threads Stored, Thread Data Storage (TCB, Registers, PC, and Stack)
+
+Just like the PCB, thread control data is stored in **kernel space** to protect it from unauthorized modification by user applications.
+
+## Component Breakdown
+
+* **Thread Control Block (TCB):** Stored in **Kernel Space**. This is the thread equivalent of a PCB, used by the OS scheduler to manage thread execution.
+* **Program Counter (PC) & CPU Registers:** 
+  * **When Running:** Stored directly inside the **Physical CPU hardware**.
+  * **When Stopped:** Saved into the **TCB (Kernel Space)** so the thread can resume exactly where it left off.
+* **Stack Pointer (SP):** The pointer *address* is stored in the **TCB (Kernel Space)**. This address points to the thread's actual stacks:
+  * **User Stack:** Located in **User Space** to handle standard application function calls.
+  * **Kernel Stack:** Located in **Kernel Space** to handle system calls and OS tasks.
+
+> **Key Takeaway:** The OS maintains strict control over thread management by keeping all TCBs, saved registers, and execution states safely isolated inside **kernel space RAM**.
