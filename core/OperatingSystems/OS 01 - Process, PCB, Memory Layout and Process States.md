@@ -192,6 +192,8 @@ Restored into CPU
 
 Process continues exactly where it stopped.
 
+The CPU registers of the currently executing entity are saved during a context switch. In a single-threaded process this context may be stored in the PCB, while in a multithreaded process the register values are typically stored in the corresponding TCB because each thread has its own execution state.
+
 ---
 
 # 7. Memory Information in PCB
