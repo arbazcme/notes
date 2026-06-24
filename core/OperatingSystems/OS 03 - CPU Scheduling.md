@@ -1637,7 +1637,15 @@ Always execute process with:
 Shortest Remaining Burst Time
 ```
 
+SJF Produces Minimum Average Waiting Time
+among non-preemptive scheduling algorithms.
+
+Its preemptive version, SRTF, can further reduce
+average waiting time by preempting long jobs when
+shorter jobs arrive.
+
 ---
+
 
 ## Example
 
