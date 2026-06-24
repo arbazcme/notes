@@ -34,51 +34,6 @@
 - [16. Quick Revision Sheet](#16-quick-revision-sheet)
 
 ---
-
-
-# OS 00 - Operating System Foundations
-
-## Navigation
-
-### OS Basics
-
-* [1. What Is An Operating System?](#1-what-is-an-operating-system)
-* [2. Why Do We Need An Operating System?](#2-why-do-we-need-an-operating-system)
-* [3. Goals Of An Operating System](#3-goals-of-an-operating-system)
-
-### OS Protection & Execution
-
-* [4. User Mode vs Kernel Mode](#4-user-mode-vs-kernel-mode)
-* [5. System Calls](#5-system-calls)
-
-### Interrupts
-
-* [6. What Is An Interrupt?](#6-what-is-an-interrupt)
-* [7. Hardware Interrupts](#7-hardware-interrupts)
-* [8. Software Interrupts](#8-software-interrupts)
-* [9. Exceptions And Traps](#9-exceptions-and-traps)
-* [10. Interrupt Handling (ISR)](#10-interrupt-handling-isr)
-
-### System Startup
-
-* [11. Booting Process](#11-booting-process)
-
-### OS Architecture
-
-* [12. Monolithic Kernel](#12-monolithic-kernel)
-* [13. Microkernel](#13-microkernel)
-
-### OS Types
-
-* [14. Types Of Operating Systems](#14-types-of-operating-systems)
-
-### Revision
-
-* [15. Common Interview Questions](#15-common-interview-questions)
-* [16. Quick Revision Sheet](#16-quick-revision-sheet)
-
----
-
 # 1. What Is An Operating System?
 
 Operating System (OS) is system software that acts as an intermediary between:
@@ -1044,53 +999,389 @@ Minimal Kernel
 
 ---
 
-# Batch OS
+# 1. Batch Operating System
 
-Jobs executed in batches.
+Oldest type of operating system.
 
-No interaction.
+Users submit jobs to the system.
 
----
-
-# Multiprogramming OS
-
-Many processes in memory.
-
-CPU switches between them.
+OS collects multiple jobs into a batch and executes them one after another.
 
 ---
 
-# Multitasking OS
-
-User runs multiple applications simultaneously.
-
----
-
-# Real-Time OS (RTOS)
-
-Strict timing guarantees.
-
-Examples:
+## Example
 
 ```text
-Aircraft Systems
+Job 1 → Salary Calculation
+Job 2 → Electricity Bill Generation
+Job 3 → Report Generation
+```
 
-Medical Devices
+OS processes all jobs sequentially.
+
+---
+
+## Characteristics
+
+```text
+No User Interaction
+
+Jobs Executed In Batches
+
+High Turnaround Time
 ```
 
 ---
 
-# Distributed OS
+## Advantages
 
-Multiple machines appear as one system.
+```text
+Simple
+
+Good For Repetitive Tasks
+
+Can Handle Large Number Of Jobs
+```
 
 ---
 
-# Network OS
+## Disadvantages
 
-Provides network-based services.
+```text
+Long Waiting Time
+
+No Immediate Response
+
+Difficult To Debug
+```
 
 ---
+
+# 2. Multiprogramming Operating System
+
+Multiple processes are kept in memory at the same time.
+
+When one process waits for I/O, CPU executes another process.
+
+---
+
+## Example
+
+```text
+Process A → Waiting For Disk
+
+CPU Executes
+
+Process B
+```
+
+instead of remaining idle.
+
+---
+
+## Goal
+
+```text
+Keep CPU Busy
+```
+
+---
+
+## Characteristics
+
+```text
+Multiple Processes In RAM
+
+CPU Rarely Idle
+
+Better Resource Utilization
+```
+
+---
+
+## Advantages
+
+```text
+Higher CPU Utilization
+
+Better Throughput
+
+Less CPU Wastage
+```
+
+---
+
+## Disadvantages
+
+```text
+More Complex
+
+Requires Scheduling
+
+Requires Memory Management
+```
+
+---
+
+# 3. Multitasking Operating System
+
+Allows multiple applications to appear running simultaneously.
+
+CPU rapidly switches between processes.
+
+---
+
+## Example
+
+```text
+Chrome
+
+VS Code
+
+Spotify
+
+WhatsApp
+```
+
+running together.
+
+---
+
+## Internal Working
+
+```text
+Chrome
+ ↓
+VS Code
+ ↓
+Spotify
+ ↓
+Chrome
+```
+
+Very fast context switching.
+
+---
+
+## Goal
+
+```text
+Provide Responsive User Experience
+```
+
+---
+
+## Characteristics
+
+```text
+Time Sharing
+
+Fast Context Switching
+
+Interactive System
+```
+
+---
+
+## Advantages
+
+```text
+Responsive
+
+User Can Run Multiple Apps
+
+Efficient Resource Sharing
+```
+
+---
+
+## Disadvantages
+
+```text
+Context Switching Overhead
+
+More Complex Scheduling
+```
+
+---
+
+# 4. Real-Time Operating System (RTOS)
+
+Designed for systems where timing is critical.
+
+Responses must occur within guaranteed deadlines.
+
+---
+
+## Example
+
+```text
+Aircraft Control System
+
+Medical Equipment
+
+Industrial Robots
+```
+
+---
+
+## Goal
+
+```text
+Meet Deadlines
+```
+
+not maximize throughput.
+
+---
+
+## Characteristics
+
+```text
+Predictable Execution
+
+Deterministic Behavior
+
+Fast Response
+```
+
+---
+
+## Advantages
+
+```text
+Reliable
+
+Accurate Timing
+
+Suitable For Critical Systems
+```
+
+---
+
+## Disadvantages
+
+```text
+Complex Design
+
+Expensive Development
+```
+
+---
+
+# 5. Distributed Operating System
+
+Multiple computers work together and appear as one system.
+
+Resources are shared across machines.
+
+---
+
+## Example
+
+```text
+Computer A
+
+Computer B
+
+Computer C
+```
+
+working together.
+
+User sees:
+
+```text
+One System
+```
+
+---
+
+## Goal
+
+```text
+Resource Sharing
+
+Scalability
+
+Fault Tolerance
+```
+
+---
+
+## Advantages
+
+```text
+High Performance
+
+Resource Sharing
+
+System Can Grow Easily
+```
+
+---
+
+## Disadvantages
+
+```text
+Complex Management
+
+Network Dependency
+```
+
+---
+
+# 6. Network Operating System
+
+Provides services over a network.
+
+Focuses on communication and resource sharing.
+
+---
+
+## Example
+
+```text
+File Server
+
+Print Server
+
+Authentication Server
+```
+
+---
+
+## Characteristics
+
+```text
+Network Communication
+
+Remote Access
+
+Shared Resources
+```
+
+---
+
+## Advantages
+
+```text
+Easy Resource Sharing
+
+Centralized Management
+```
+
+---
+
+## Disadvantages
+
+```text
+Network Failure Affects Services
+
+Security Challenges
+```
+
+#
 
 # 15. Common Interview Questions
 
