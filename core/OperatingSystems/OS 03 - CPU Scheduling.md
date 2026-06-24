@@ -1413,3 +1413,618 @@ Preemptive Priority
 Conceptually OS textbooks discuss process scheduling.
 
 Modern operating systems generally schedule threads because threads are the actual execution units.
+
+# 8. FCFS (First Come First Served)
+
+Simplest scheduling algorithm.
+
+Processes execute in order of arrival.
+
+First process to arrive gets CPU first.
+
+---
+
+## Real Life Analogy
+
+```text
+Bank Queue
+
+First Person Arrives
+        ↓
+First Person Served
+```
+
+---
+
+## Example
+
+| Process | Arrival | Burst |
+| ------- | ------- | ----- |
+| P1      | 0       | 5     |
+| P2      | 1       | 3     |
+| P3      | 2       | 2     |
+
+---
+
+## Gantt Chart
+
+```text
+0      5      8      10
+| P1 | P2 | P3 |
+```
+
+---
+
+## Waiting Time
+
+P1:
+
+```text
+0
+```
+
+P2:
+
+```text
+5 - 1 = 4
+```
+
+P3:
+
+```text
+8 - 2 = 6
+```
+
+Average Waiting Time:
+
+```text
+(0 + 4 + 6) / 3
+
+= 3.33
+```
+
+---
+
+## Advantages
+
+```text
+Simple
+
+Easy To Implement
+
+No Starvation
+```
+
+---
+
+## Disadvantages
+
+```text
+Poor Response Time
+
+Large Jobs Delay Small Jobs
+```
+
+---
+
+## Convoy Effect
+
+Very Important Interview Topic.
+
+Suppose:
+
+| Process | Burst |
+| ------- | ----- |
+| P1      | 100   |
+| P2      | 2     |
+| P3      | 1     |
+
+Execution:
+
+```text
+P1
+ ↓
+P2
+ ↓
+P3
+```
+
+Small processes wait behind huge process.
+
+Called:
+
+```text
+Convoy Effect
+```
+
+---
+
+# 9. SJF (Shortest Job First)
+
+Idea:
+
+```text
+Shortest Burst Time First
+```
+
+---
+
+## Example
+
+| Process | Burst |
+| ------- | ----- |
+| P1      | 8     |
+| P2      | 4     |
+| P3      | 2     |
+
+Execution:
+
+```text
+P3
+ ↓
+P2
+ ↓
+P1
+```
+
+---
+
+## Why Does It Work?
+
+Small jobs finish quickly.
+
+Average waiting time reduces.
+
+---
+
+## Important Fact
+
+```text
+SJF Produces Minimum Average Waiting Time
+```
+
+among non-preemptive algorithms.
+
+Very popular interview question.
+
+---
+
+## Problem
+
+OS must know:
+
+```text
+Future CPU Burst Time
+```
+
+which is usually unknown.
+
+Therefore perfect SJF is difficult.
+
+---
+
+## Advantages
+
+```text
+Excellent Waiting Time
+
+Excellent Turnaround Time
+```
+
+---
+
+## Disadvantages
+
+```text
+Future Burst Time Required
+
+Possible Starvation
+```
+
+---
+
+# 10. SRTF (Shortest Remaining Time First)
+
+Preemptive version of SJF.
+
+---
+
+## Core Idea
+
+Always execute process with:
+
+```text
+Shortest Remaining Burst Time
+```
+
+---
+
+## Example
+
+P1 arrives:
+
+```text
+Burst = 10
+```
+
+Runs for:
+
+```text
+2 Seconds
+```
+
+Remaining:
+
+```text
+8
+```
+
+Now P2 arrives:
+
+```text
+Burst = 2
+```
+
+---
+
+## Scheduler Decision
+
+Compare:
+
+```text
+P1 Remaining = 8
+
+P2 Remaining = 2
+```
+
+Run:
+
+```text
+P2
+```
+
+instead of P1.
+
+---
+
+## Why?
+
+P2 can finish earlier.
+
+Improves average waiting time.
+
+---
+
+## Advantages
+
+```text
+Best Waiting Time
+
+Best Turnaround Time
+```
+
+---
+
+## Disadvantages
+
+```text
+Many Context Switches
+
+More Overhead
+
+Complex Implementation
+```
+
+---
+
+# 11. Priority Scheduling
+
+Each process receives a priority value.
+
+Higher priority process executes first.
+
+---
+
+## Example
+
+| Process | Priority |
+| ------- | -------- |
+| P1      | 3        |
+| P2      | 1        |
+| P3      | 2        |
+
+Assume:
+
+```text
+Smaller Number
+=
+Higher Priority
+```
+
+Execution:
+
+```text
+P2
+ ↓
+P3
+ ↓
+P1
+```
+
+---
+
+## Types
+
+### Non-Preemptive
+
+Running process keeps CPU.
+
+---
+
+### Preemptive
+
+Higher priority process can interrupt current process.
+
+---
+
+## Starvation Problem
+
+Very important.
+
+Suppose:
+
+```text
+P1 Priority = 100
+```
+
+Low priority.
+
+New high-priority jobs keep arriving.
+
+P1 may never execute.
+
+---
+
+## Advantages
+
+```text
+Important Jobs Execute First
+```
+
+---
+
+## Disadvantages
+
+```text
+Starvation Possible
+```
+
+---
+
+# 12. Round Robin
+
+Most important practical scheduling algorithm.
+
+Used in:
+
+```text
+Time Sharing Systems
+```
+
+---
+
+## Core Idea
+
+Each process gets:
+
+```text
+Time Quantum
+```
+
+Example:
+
+```text
+2 ms
+```
+
+---
+
+## Example
+
+| Process | Burst |
+| ------- | ----- |
+| P1      | 5     |
+| P2      | 4     |
+| P3      | 3     |
+
+Quantum:
+
+```text
+2
+```
+
+---
+
+## Execution
+
+```text
+P1
+ ↓
+P2
+ ↓
+P3
+ ↓
+P1
+ ↓
+P2
+ ↓
+P3
+ ↓
+P1
+```
+
+---
+
+## Why Is It Fair?
+
+Every process gets CPU regularly.
+
+No process monopolizes CPU.
+
+---
+
+## Quantum Too Small
+
+```text
+Many Context Switches
+```
+
+High overhead.
+
+---
+
+## Quantum Too Large
+
+Behaves like:
+
+```text
+FCFS
+```
+
+---
+
+## Advantages
+
+```text
+Fair
+
+Responsive
+
+Good For Interactive Systems
+```
+
+---
+
+## Disadvantages
+
+```text
+Context Switching Overhead
+```
+
+---
+
+# Formula Cheat Sheet
+
+| Metric          | Formula                             |
+| --------------- | ----------------------------------- |
+| Turnaround Time | Completion Time - Arrival Time      |
+| Waiting Time    | Turnaround Time - Burst Time        |
+| Response Time   | First CPU Allocation - Arrival Time |
+| Throughput      | Completed Processes / Total Time    |
+| CPU Utilization | Busy Time / Total Time × 100        |
+
+---
+
+# Gantt Chart Basics
+
+A Gantt Chart shows:
+
+```text
+Which Process
+Runs At Which Time
+```
+
+Example:
+
+```text
+0      5      8
+| P1 | P2 |
+```
+
+---
+
+# Solved Example
+
+| Process | Arrival | Burst |
+| ------- | ------- | ----- |
+| P1      | 0       | 5     |
+| P2      | 2       | 3     |
+
+FCFS:
+
+```text
+0      5      8
+| P1 | P2 |
+```
+
+---
+
+P1:
+
+```text
+CT = 5
+
+TAT = 5 - 0 = 5
+
+WT = 5 - 5 = 0
+
+RT = 0
+```
+
+---
+
+P2:
+
+```text
+CT = 8
+
+TAT = 8 - 2 = 6
+
+WT = 6 - 3 = 3
+
+RT = 5 - 2 = 3
+```
+
+---
+
+# Comparison Table
+
+| Algorithm   | Preemptive | Starvation | Response Time |
+| ----------- | ---------- | ---------- | ------------- |
+| FCFS        | No         | No         | Poor          |
+| SJF         | No         | Possible   | Good          |
+| SRTF        | Yes        | Possible   | Better        |
+| Priority    | Both       | Possible   | Depends       |
+| Round Robin | Yes        | No         | Excellent     |
+
+---
+
+# Advantages and Disadvantages Summary
+
+```text
+FCFS
+=
+Simple
+But Convoy Effect
+
+SJF
+=
+Best Waiting Time
+But Future Burst Needed
+
+SRTF
+=
+Best Average Performance
+But Many Context Switches
+
+Priority
+=
+Important Jobs First
+But Starvation Possible
+
+Round Robin
+=
+Fair And Responsive
+But Quantum Selection Matters
+```
+
