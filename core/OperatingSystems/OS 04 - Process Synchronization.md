@@ -1836,6 +1836,89 @@ Continue
 
 Sleeping avoids wasting CPU by repeatedly checking the condition.
 
+# Mutex vs Condition Variable - Core Mental Model
+
+At a high level, both follow the same workflow:
+
+```text
+Cannot Proceed
+        ↓
+Sleep
+        ↓
+Something Changes
+        ↓
+Wake Up
+        ↓
+Continue
+```
+
+The difference is **what they are waiting for**.
+
+```text
+Mutex
+Waiting For
+→ Lock To Become Free
+```
+
+```text
+Condition Variable
+Waiting For
+→ Some Condition To Become True
+```
+
+Think of it this way:
+
+```text
+Mutex
+→ "Is the critical section free?"
+```
+
+```text
+Condition Variable
+→ "Can I continue now?"
+```
+
+or
+
+```text
+"Is there work to do?"
+```
+
+A mutex typically wakes **one** waiting thread when the lock is released.
+
+A condition variable can wake:
+
+```text
+notify()/signal()
+→ One Waiting Thread
+
+notify_all()/broadcast()
+→ All Waiting Threads
+```
+
+In Producer-Consumer:
+
+```text
+Mutex
+→ Ensures Only One Thread Accesses The Buffer
+
+Condition Variable
+→ Sleeps/Wakes Producer Or Consumer
+When Buffer State Changes
+```
+
+### Memory Trick
+
+```text
+Mutex
+=
+Who May Enter?
+
+Condition Variable
+=
+When Should I Wake Up?
+```
+if the scenarios is i have to make a thread wait and awake it based on condition then conditional variable ,
 
 # Part 2 Summary
 
@@ -2392,3 +2475,158 @@ Dining Philosophers
         ↓
 Deadlock
 ```
+
+# OS 04 - Quick Code Reference (High ROI)
+
+---
+
+# 1. Mutex
+
+**Purpose**
+
+```text
+Protect Critical Section
+```
+
+```cpp
+lock(mutex);
+
+/* Critical Section */
+
+unlock(mutex);
+```
+
+---
+
+# 2. Binary Semaphore
+
+**Purpose**
+
+```text
+Acts Like Mutex
+(No Ownership)
+```
+
+```cpp
+wait(binarySemaphore);
+
+/* Critical Section */
+
+signal(binarySemaphore);
+```
+
+---
+
+# 3. Counting Semaphore
+
+**Purpose**
+
+```text
+Control N Resource Instances
+```
+
+```cpp
+wait(S);
+
+/* Use Resource */
+
+signal(S);
+```
+
+---
+
+# 4. Condition Variable
+
+**Purpose**
+
+```text
+Sleep Until Condition Becomes True
+```
+
+```cpp
+lock(mutex);
+
+while(!condition)
+    wait(cv, mutex);
+
+/* Critical Section */
+
+unlock(mutex);
+```
+
+---
+
+# 5. Producer-Consumer (Classical Solution)
+
+```cpp
+semaphore mutex = 1;
+semaphore empty = N;
+semaphore full = 0;
+```
+
+Producer:
+
+```cpp
+wait(empty);
+wait(mutex);
+
+/* Insert Item */
+
+signal(mutex);
+signal(full);
+```
+
+Consumer:
+
+```cpp
+wait(full);
+wait(mutex);
+
+/* Remove Item */
+
+signal(mutex);
+signal(empty);
+```
+
+---
+
+# Interview Points ⭐
+
+```text
+Mutex
+→ Protect Shared Data
+
+Binary Semaphore
+→ Mutex Without Ownership
+
+Counting Semaphore
+→ Count Available Resources
+
+Condition Variable
+→ Sleep Until Condition Becomes True
+
+Producer-Consumer
+→ Mutex + Semaphore
+(Classical OS)
+
+or
+
+Mutex + Condition Variable
+(Modern Programming)
+```
+
+---
+
+# Must Remember
+
+```text
+Mutex
+→ Wait For Lock
+
+Condition Variable
+→ Wait For Condition
+
+Semaphore
+→ Wait For Resource
+```
+
