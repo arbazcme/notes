@@ -1042,7 +1042,7 @@ Wait
 ## Why Mutex Works
 
 Because:
-
+## generally for shared resources there is a lock to try to make operations on it atomic, Mutual exclusion achieved.
 ```text
 Read
 Modify
