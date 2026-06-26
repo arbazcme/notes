@@ -27,12 +27,30 @@
 - [17. Condition Variables](#17-condition-variables)
 
 ### Part 3 - Classical Synchronization Problems
-- [18. Producer Consumer Problem](#18-producer-consumer-problem)
-- [19. Readers Writers Problem](#19-readers-writers-problem)
-- [20. Dining Philosophers Problem](#20-dining-philosophers-problem)
-- [21. Synchronization And Deadlocks](#21-synchronization-and-deadlocks)
-- [22. Common Interview Questions](#22-common-interview-questions)
-- [23. Quick Revision](#23-quick-revision)
+- [Producer Consumer Problem](#producer-consumer-problem)
+- [Classical Synchronization Problems](#classical-synchronization-problems)
+  - [Readers-Writers Problem](#1-readers-writers-problem)
+  - [Dining Philosophers Problem](#2-dining-philosophers-problem)
+  - [Producer-Consumer Problem](#3-producer-consumer-problem)
+- [Synchronization vs Deadlock](#synchronization-vs-deadlock)
+- [Interview FAQs](#interview-faqs)
+  - [Race Condition](#race-condition)
+  - [Critical Section](#critical-section)
+  - [Synchronization vs Communication](#synchronization-vs-communication)
+  - [Mutex](#mutex)
+  - [Semaphore](#semaphore)
+  - [Binary Semaphore vs Mutex](#binary-semaphore-vs-mutex)
+  - [Spinlock vs Mutex](#spinlock-vs-mutex)
+  - [Monitor](#monitor)
+  - [Condition Variable](#condition-variable)
+- [Quick Revision](#quick-revision)
+- [OS 04 - Quick Code Reference](#os-04---quick-code-reference-high-roi)
+  - [Mutex](#1-mutex)
+  - [Binary Semaphore](#2-binary-semaphore)
+  - [Counting Semaphore](#3-counting-semaphore)
+  - [Condition Variable](#4-condition-variable)
+  - [Producer-Consumer Code](#5-producer-consumer-classical-solution)
+- [Why `while` Instead of `if`?](#why-do-we-use-while-instead-of-if-with-a-condition-variable)
 
 ---
 
@@ -1993,7 +2011,7 @@ Readers Writers
 Dining Philosophers
 ```
 
-which is Part 3.
+ 
 # Part 3 - Classical Synchronization Problems
 
 ---
@@ -2629,4 +2647,85 @@ Condition Variable
 Semaphore
 → Wait For Resource
 ```
+
+# Why do we use `while` instead of `if` with a Condition Variable?
+
+```cpp
+lock(mutex);
+
+while (!condition)
+    wait(cv, mutex);
+
+/* Critical Section */
+
+unlock(mutex);
+```
+
+### Why the `while` loop?
+
+The loop is **not** because `wait()` sleeps repeatedly.
+
+It is used to **recheck the condition after every wake-up**.
+
+### Thread Execution
+
+1. Lock the mutex.
+2. Check the condition.
+3. If the condition is `false`:
+   - `wait(cv, mutex)` **atomically**:
+     - Releases the mutex.
+     - Puts the thread to sleep.
+4. Another thread changes the condition and calls `notify_one()` or `notify_all()`.
+5. The waiting thread wakes up.
+6. Before `wait()` returns, it **reacquires the mutex**.
+7. The `while` loop checks the condition **again**.
+
+### Why check again?
+
+Because waking up **does not guarantee** the condition is true.
+
+Possible reasons:
+- **Spurious wakeup** (OS may wake a thread without notification).
+- Another thread changed the condition before this thread got the mutex.
+- Multiple waiting threads woke up, but only one could use the resource.
+
+### Example
+
+Suppose two consumers are waiting for an item.
+
+```
+Producer:
+itemCount = 1;
+notify_all();
+```
+
+Both consumers wake up.
+
+- Consumer B gets the mutex first.
+- Removes the item (`itemCount = 0`).
+- Consumer A gets the mutex later.
+
+If Consumer A used:
+
+```cpp
+if (!condition)
+    wait(cv, mutex);
+```
+
+it would continue into the critical section even though `itemCount == 0`. ❌
+
+With:
+
+```cpp
+while (!condition)
+    wait(cv, mutex);
+```
+
+Consumer A checks the condition again, finds it false, and goes back to sleep. ✅
+
+### Rule to Remember
+
+> **Always use `while`, never `if`, with condition variables.**
+
+The `while` loop exists to **recheck the condition after every wake-up**, ensuring correctness even with spurious wakeups or multiple waiting threads.
 
