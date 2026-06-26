@@ -3190,3 +3190,236 @@ Stack
 ```
 
 Threads are lightweight because they share process resources while maintaining independent execution contexts.
+
+# How Does A Program Actually Execute?
+
+One of the biggest misconceptions is that the OS automatically creates multiple execution threads for every program.
+
+It does **not**.
+
+---
+
+## Program Startup
+
+When you run a program:
+
+```text
+Executable File
+        ↓
+OS Creates Process
+        ↓
+OS Creates One Main Thread
+        ↓
+Main Thread Starts At main()
+```
+
+Initially every normal process has:
+
+```text
+1 Process
+
+1 Main Thread
+
+1 Program Counter (PC)
+
+1 Stack
+```
+
+---
+
+## How Does The Program Execute?
+
+Suppose:
+
+```cpp
+int main()
+{
+    int x = 5;
+    int y = x + 2;
+    cout << y;
+}
+```
+
+Execution is simply:
+
+```text
+main()
+   ↓
+Line 1
+   ↓
+Line 2
+   ↓
+Line 3
+   ↓
+Program Ends
+```
+
+Only **one thread** executes these instructions.
+
+There is **no parallel execution**.
+
+---
+
+## When Do Multiple Threads Exist?
+
+Only if:
+
+* The programmer creates them (`std::thread`, `pthread_create`)
+* A library creates them
+* A runtime/framework creates them (JVM, Browser, Game Engine, Thread Pool)
+
+Otherwise:
+
+```text
+One Process
+        ↓
+One Main Thread
+        ↓
+Sequential Execution
+```
+
+---
+
+## Do Threads Start In The Middle Of My Code?
+
+**No.**
+
+Threads never randomly begin executing at line 50 or line 100.
+
+Each thread starts from its assigned **entry function**.
+
+Example:
+
+```cpp
+void worker()
+{
+    ...
+}
+
+int main()
+{
+    std::thread t(worker);
+}
+```
+
+Execution becomes:
+
+```text
+Main Thread
+↓
+
+main()
+
+---------------------
+
+Worker Thread
+↓
+
+worker()
+```
+
+Each thread has its own execution flow.
+
+---
+
+## Why Can Multiple Threads Execute The Same Function?
+
+Example:
+
+```cpp
+void increment()
+{
+    counter++;
+}
+
+thread t1(increment);
+thread t2(increment);
+```
+
+Execution:
+
+```text
+Thread 1
+↓
+
+increment()
+
+------------------
+
+Thread 2
+↓
+
+increment()
+```
+
+Both begin from the first line of `increment()`.
+
+Each has its own:
+
+```text
+Program Counter
+
+Registers
+
+Stack
+```
+
+They only share:
+
+```text
+Heap
+
+Global Variables
+
+Code (.text Section)
+```
+
+---
+
+# Interview Answer
+
+```text
+Every process starts with one main thread created by the OS.
+
+The main thread begins execution at main().
+
+Additional threads exist only if the program, a library, or the runtime explicitly creates them.
+```
+
+---
+
+# Memory Trick
+
+```text
+Executable
+        ↓
+Process
+        ↓
+Main Thread
+        ↓
+main()
+        ↓
+Sequential Execution
+
+Additional Threads?
+↓
+
+Only If Explicitly Created
+```
+
+```text
+Application (User Space)
+-------------------------
+Main Thread
+Worker Thread
+Worker Thread
+
+=========================
+
+Kernel (OS)
+-------------------------
+Kernel Thread
+Kernel Thread
+Kernel Thread
+```
+
