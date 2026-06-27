@@ -1262,7 +1262,11 @@ Returns
 Data
 ```
 
+
+
 # 18. Why Was Load-Time Binding Not Enough?
+
+so simply rewriting the entire program, load time is simply advantage in taking offset and start from free mem but when we have to swap in and out it fails.
 
 Suppose the loader places the program at:
 
