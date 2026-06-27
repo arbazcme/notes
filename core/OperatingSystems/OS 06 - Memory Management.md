@@ -2253,6 +2253,9 @@ Execution-Time
 
 Program Can Move While Running.
 
+
+Till here the address translation problem is solved, next is how to actually allocate ram!
+"How should RAM actually be organized and allocated efficiently?"
 --------------------
 
 Paging
@@ -2298,6 +2301,7 @@ Fixed Partitioning
 ```
 
 ---
+
 
 # What Is Fixed Partitioning?
 
