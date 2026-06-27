@@ -3878,6 +3878,10 @@ but compaction itself was expensive.
 Engineers asked:
 
 > **Why should a process occupy one continuous block at all?**
+> 
+Compaction reduced fragmentation by moving processes together, but continuously moving large amounts of memory was slow and expensive.
+Engineers realized the real problem was the assumption that every process must occupy one continuous block of memory.
+They removed that requirement by inventing **paging**, allowing a process to be split into small pages and stored anywhere in RAM.
 
 That single question led to the invention of:
 
