@@ -9,14 +9,11 @@
 - [5. Why Can't We Simply Use Files?](#5-why-cant-we-simply-use-files)
 - [6. Problems With File Systems](#6-problems-with-file-systems)
 - [7. What Is A DBMS?](#7-what-is-a-dbms)
-- [8. Advantages Of DBMS](#8-advantages-of-dbms)
-- [9. Database Users](#9-database-users)
-- [10. DBMS Architecture](#10-dbms-architecture)
-- [11. Three Schema Architecture](#11-three-schema-architecture)
-- [12. Data Independence](#12-data-independence)
-- [13. Interview Questions](#13-interview-questions)
-- [14. Final Mental Model](#14-final-mental-model)
-
+- [8. How Does A DBMS Solve File System Problems?](#8-how-does-a-dbms-solve-file-system-problems)
+- [9. Advantages Of DBMS](#9-advantages-of-dbms)
+- [10. Data Independence](#10-data-independence)
+- [11. Interview Questions](#11-interview-questions)
+- [12. Final Mental Model](#12-final-mental-model)
 ---
 
 # 1. Why Do We Need To Store Data?
@@ -1723,6 +1720,7 @@ Solutions
 
 # 9. Advantages Of DBMS
 
+
 A DBMS provides:
 
 ```text
@@ -1759,207 +1757,8 @@ Easy Maintenance
 
 ---
 
-# 10. Database Users
 
-Different people
-
-use a database
-
-for different purposes.
-
----
-
-## Database Administrator (DBA)
-
-Responsible for:
-
-```text
-Security
-
-Backup
-
-Recovery
-
-Permissions
-
-Performance
-```
-
-The DBA
-
-manages
-
-the entire database.
-
----
-
-## Application Programmer
-
-Writes programs
-
-that communicate
-
-with the DBMS.
-
-Example:
-
-```text
-Instagram
-
-Amazon
-
-Banking Apps
-```
-
----
-
-## End User
-
-The final user
-
-who uses
-
-the application.
-
-Example:
-
-```text
-You
-
-Using
-
-Instagram
-
-UPI
-
-WhatsApp
-```
-
-The end user
-
-usually never
-
-interacts directly
-
-with the DBMS.
-
----
-
-# 11. DBMS Architecture
-
-Most modern applications
-
-follow this flow:
-
-```text
-User
-
-↓
-
-Frontend
-
-↓
-
-Backend
-
-↓
-
-DBMS
-
-↓
-
-Database
-```
-
-Example:
-
-```text
-Browser
-
-↓
-
-Node.js
-
-↓
-
-MySQL
-
-↓
-
-Stored Data
-```
-
-Notice:
-
-The frontend
-
-never directly
-
-modifies the database.
-
-The backend
-
-communicates
-
-with the DBMS.
-
----
-
-# 12. Three Schema Architecture
-
-As databases grew,
-
-another question appeared.
-
-```text
-Can we change
-
-how data is stored
-
-without changing
-
-every application?
-```
-
-The answer is:
-
-```text
-Yes.
-```
-
-DBMS divides
-
-the database into
-
-three levels:
-
-```text
-External Level
-
-↓
-
-Conceptual Level
-
-↓
-
-Internal Level
-```
-
-We'll study
-
-these levels
-
-deeply later.
-
-For now,
-
-remember only
-
-their names.
-
----
-
-# 13. Data Independence
+# 10. Data Independence
 
 Suppose
 
@@ -2009,7 +1808,7 @@ in detail later.
 
 ---
 
-# 14. Interview Questions
+# 11. Interview Questions
 
 ### What Is A DBMS?
 
@@ -2101,7 +1900,7 @@ The Database.
 
 ---
 
-# Final Mental Model
+# 12. Final Mental Model
 
 ```text
 Need To Store Data
