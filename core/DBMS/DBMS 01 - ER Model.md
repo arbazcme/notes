@@ -1328,77 +1328,182 @@ Cardinality
 
 ## Why Do We Need Cardinality?
 
-Suppose we only write:
+A relationship alone is incomplete.
 
-```text
+based on this cardinality schema is desined.
+
+Example:
+
+```
+Student ---- Studies ---- Course
+```
+
+We don't know:
+
+* Can one student study one course or many?
+* Can one course have one student or many?
+
+Cardinality defines these business rules.
+
+---
+
+## Why Is Cardinality Useful?
+
+Cardinality determines:
+
+* Database schema design.
+* Where foreign keys are placed.
+* Whether a separate relationship table is required.
+* What data is valid.
+* Application logic.
+
+Without cardinality, we cannot correctly design the database.
+
+---
+
+# True 1 Example
+
+```
+Department (1) -------- (N) Student
+```
+
+One department has many students.
+
+Each student belongs to only one department.
+
+```
 Student
+----------------------------
+StudentID | Name | DepartmentID
+```
 
-Studies
+No extra table is required because each student stores exactly one DepartmentID.
+
+---
+
+# Student ↔ Course
+
+Suppose:
+
+```
+Ali
+ ├── DBMS
+ ├── OS
+ └── CN
+```
+
+One `CourseID` column cannot store multiple courses.
+
+Wrong:
+
+```
+Student
+----------------------------
+StudentID | Name | CourseID
+1         | Ali  | DBMS, OS
+```
+
+Also wrong:
+
+```
+StudentID | Name | CourseID
+1         | Ali  | DBMS
+1         | Ali  | OS
+1         | Ali  | CN
+```
+
+This duplicates student information.
+
+Correct design:
+
+```
+Student
+-------------------
+StudentID | Name
 
 Course
+-------------------
+CourseID | Name
+
+Enrollment
+-------------------
+StudentID | CourseID
 ```
 
-Question:
+Student data is stored once.
 
-Can one student
-
-study only one course?
-
-OR
-
-many courses?
-
-Nothing tells us.
-
-Similarly,
-
-can one course
-
-have one student
-
-or thousands?
-
-Again,
-
-nothing tells us.
-
-The relationship
-
-alone is incomplete.
-
-We need to specify
-
-**how many entities**
-
-can participate.
-
-That is exactly
-
-what Cardinality tells us.
+Relationship data is stored separately.
 
 ---
 
-## Definition
+# Primary Key & Foreign Key
 
-Cardinality specifies:
+```
+Student
+-------------------
+StudentID | Name
+1         | Ali
 
-```text
-The maximum number
-
-of entity instances
-
-that can participate
-
-in a relationship.
+Enrollment
+-------------------
+StudentID | CourseID
+1         | DBMS
+1         | OS
+1         | CN
 ```
 
-Simply remember:
-
-```text
-Maximum Participation
-```
+`Enrollment.StudentID` is a **Foreign Key** referencing `Student.StudentID`.
 
 ---
+
+# What If StudentID Changes?
+
+Since other tables reference it:
+
+### Option 1 (Common)
+
+The DBMS blocks the update.
+
+```
+Cannot update StudentID.
+Referenced by Enrollment.
+```
+
+### Option 2
+
+Using:
+
+```
+ON UPDATE CASCADE
+```
+
+The DBMS automatically updates all matching foreign keys.
+
+Example:
+
+Before:
+
+```
+Student
+1 Ali
+
+Enrollment
+1 DBMS
+1 OS
+```
+
+After changing `1 → 2`:
+
+```
+Student
+2 Ali
+
+Enrollment
+2 DBMS
+2 OS
+```
+
+Everything remains consistent.
 
 # Types Of Cardinality
 
