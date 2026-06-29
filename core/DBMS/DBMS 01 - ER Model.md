@@ -2526,6 +2526,19 @@ https://www.geeksforgeeks.org/dbms/introduction-of-er-model/
 
 ---
 
+single lined relation is partial participation, and 2 lined relation is Total participation
+Participation Constraint
+``` text
+Participation Constraint is applied to the entity participating in the relationship set.
+
+Total Participation: Each entity in the entity set must participate in the relationship. If each student must enroll in a course,
+ the participation of students will be total. Total participation is shown by a double line in the ER diagram.
+Partial Participation: The entity in the entity set may or may NOT participate in the relationship.
+ If some courses are not enrolled by any of the students, the participation in the course will be partial.
+```
+![Logo of Google](https://media.geeksforgeeks.org/wp-content/uploads/20251027112537084521/frame_3244.webp)
+
+
 # 13. Converting ER Model To Relational Model
 
 An ER Diagram
