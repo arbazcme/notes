@@ -1,25 +1,25 @@
 # DBMS 04 - SQL (Structured Query Language)
 
 ## Navigation
+## Navigation
 
 - [1. Why Do We Need SQL?](#1-why-do-we-need-sql)
-- [2. What Is SQL?](#2-what-is-sql)
-- [3. Our Database](#3-our-database)
-- [4. First SQL Query](#4-first-sql-query)
-- [5. How Does DBMS Execute A Query?](#5-how-does-dbms-execute-a-query)
-- [6. WHERE Clause](#6-where-clause)
-- [7. Building Complex Conditions](#7-building-complex-conditions)
-- [8. ORDER BY](#8-order-by)
-- [9. DISTINCT, LIMIT & Aggregate Functions](#9-distinct-limit--aggregate-functions)
-- [10. GROUP BY & HAVING](#10-group-by--having)
-- [11. JOINS](#11-joins)
-- [12. Subqueries](#12-subqueries)
-- [13. IN, EXISTS, ANY & ALL](#13-in-exists-any--all)
-- [14. Views](#14-views)
-- [15. Stored Procedures](#15-stored-procedures)
-- [16. Functions](#16-functions)
-- [17. Triggers](#17-triggers)
-- [18. Final Mental Model](#18-final-mental-model)
+- [2. Our Database](#2-our-database)
+- [3. First SQL Query](#3-first-sql-query)
+- [4. How Does DBMS Execute A Query?](#4-how-does-dbms-execute-a-query)
+- [5. WHERE Clause](#5-where-clause)
+- [6. Building Complex Conditions](#6-building-complex-conditions)
+- [7. ORDER BY](#7-order-by)
+- [8. DISTINCT, LIMIT & Aggregate Functions](#8-distinct-limit--aggregate-functions)
+- [9. GROUP BY & HAVING](#9-group-by--having)
+- [10. JOINS](#10-joins)
+- [11. Subqueries](#11-subqueries)
+- [12. IN, EXISTS, ANY & ALL](#12-in-exists-any--all)
+- [13. Views](#13-views)
+- [14. Stored Procedures](#14-stored-procedures)
+- [15. Functions](#15-functions)
+- [16. Triggers](#16-triggers)
+- [17. Final Mental Model](#17-final-mental-model)
 
 ---
 
