@@ -1976,6 +1976,12 @@ or applications.
 
 ---
 
+```text
+👤 An end user when using the frontend.
+👨‍💻 A programmer/DBA when using MySQL.
+💾 Never the internal level—that's handled automatically by the DBMS.
+```
+
 ## Which Is Harder?
 
 Question:
