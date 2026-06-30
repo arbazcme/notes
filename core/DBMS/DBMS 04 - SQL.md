@@ -1,7 +1,6 @@
 # DBMS 04 - SQL (Structured Query Language)
 
-## Navigation
-## Navigation
+## Navigation 
 
 - [1. Why Do We Need SQL?](#1-why-do-we-need-sql)
 - [2. Our Database](#2-our-database)
@@ -19,7 +18,7 @@
 - [14. Stored Procedures](#14-stored-procedures)
 - [15. Functions](#15-functions)
 - [16. Triggers](#16-triggers)
-- [17. Final Mental Model](#17-final-mental-model)
+- [17. Final Mental Model](#final-mental-model)
 
 ---
 
@@ -642,7 +641,7 @@ for exactly
 the data we want.
 
 
-# 2. WHERE Clause
+# 5. WHERE Clause
 
 Until now,
 
@@ -1291,7 +1290,7 @@ more powerful
 
 search conditions.
 
-# 3. Building Complex Conditions
+# 6. Building Complex Conditions
 
 Until now,
 
@@ -1618,7 +1617,7 @@ SQL provides:
 ORDER BY
 ```
 
-# 4. ORDER BY
+# 7. ORDER BY
 
 Until now,
 
@@ -1964,7 +1963,7 @@ Using:
 DISTINCT
 ```
 
-# 5. DISTINCT, LIMIT & Aggregate Functions
+# 8. DISTINCT, LIMIT & Aggregate Functions
 
 ---
 
@@ -2564,7 +2563,7 @@ topics
 
 in SQL.
 
-# 6. GROUP BY & HAVING
+# 9. GROUP BY & HAVING
 
 Until now,
 
@@ -3256,7 +3255,7 @@ the most frequently
 
 asked interview topics.
 
-# 7. JOINS
+# 10. JOINS
 
 Until now,
 
@@ -3961,7 +3960,7 @@ SQL provides:
 Subqueries
 ```
 
-# 8. Subqueries
+# 11. Subqueries
 
 Until now,
 
@@ -4155,7 +4154,7 @@ FROM Student
 
 ---
 
-# 9. IN
+# 12. IN, EXISTS, ANY & ALL
 
 Suppose
 
