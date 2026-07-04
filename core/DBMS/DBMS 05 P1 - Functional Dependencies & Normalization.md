@@ -5433,49 +5433,292 @@ to the closure.
 ---
 
 # Mental Model
+# From Functional Dependencies to Normalization (Interview Flow)
 
-Imagine
+## Problem
 
-you own
+Given a table:
 
-a bunch of keys.
+| StudentID | Department | HOD |
+|-----------|------------|-----|
+|101|CSE|Dr. Rao|
+|102|ECE|Dr. Sharma|
 
-Every Functional Dependency
+Question:
 
-is
+- How do we know the Candidate Key?
+- How do we know whether to normalize?
 
-a locked room.
+---
 
-If you have
+# Step 1: Business Rules
 
-all required keys,
+These are real-world facts.
 
-the room opens
+```text
+A Student belongs to one Department.
+A Department has one HOD.
+```
 
-and gives you
+Need:
+- Database doesn't understand English.
 
-new keys.
+---
 
-Those new keys
+# Step 2: Functional Dependencies (FDs)
 
-may open
+Convert business rules into mathematical form.
 
-more rooms.
+```text
+StudentID → Department
+Department → HOD
+```
 
-Eventually,
+Need:
+- To formally describe how attributes depend on each other.
 
-no more rooms
+---
 
-can be opened.
+# Step 3: Armstrong's Axioms
 
-The keys
+Question:
 
-you collected
+Can StudentID determine HOD?
 
-are
+Nobody wrote:
 
-the Attribute Closure.
+```text
+StudentID → HOD
+```
 
+Using Transitivity:
+
+```text
+StudentID → Department
+Department → HOD
+-------------------
+StudentID → HOD
+```
+
+Need:
+- To discover every logically true FD.
+
+---
+
+# Step 4: Attribute Closure
+
+Now ask:
+
+```text
+What can StudentID determine?
+```
+
+Compute:
+
+```text
+StudentID+
+
+Start:
+{StudentID}
+
+↓
+
+Department
+
+↓
+
+HOD
+
+↓
+
+{StudentID, Department, HOD}
+```
+
+Need:
+- To know everything an attribute can determine.
+
+---
+
+# Step 5: Candidate Key
+
+Rule:
+
+```text
+If X+ contains all attributes,
+
+then X is a Candidate Key.
+```
+
+Here:
+
+```text
+StudentID+
+=
+{StudentID, Department, HOD}
+```
+
+So,
+
+```text
+StudentID
+```
+
+is the Candidate Key.
+
+Need:
+- Normalization always depends on Candidate Keys.
+
+---
+
+# Step 6: Check 2NF
+
+Example:
+
+| StudentID | Subject | StudentName | Marks |
+
+FDs:
+
+```text
+(StudentID, Subject) → Marks
+
+StudentID → StudentName
+```
+
+Candidate Key:
+
+```text
+(StudentID, Subject)
+```
+
+StudentName depends on only part of the key.
+
+↓
+
+Partial Dependency
+
+↓
+
+2NF Violation
+
+Need:
+- Remove Partial Dependency.
+
+---
+
+# Step 7: Check 3NF
+
+FDs:
+
+```text
+StudentID → Department
+
+Department → HOD
+```
+
+HOD depends on Department,
+not directly on StudentID.
+
+↓
+
+Transitive Dependency
+
+↓
+
+3NF Violation
+
+Need:
+- Remove Transitive Dependency.
+
+---
+
+# Step 8: Check BCNF
+
+Rule:
+
+```text
+Every Determinant
+must be
+a Candidate Key.
+```
+
+If
+
+```text
+Room → Teacher
+```
+
+and Room is NOT a Candidate Key,
+
+↓
+
+BCNF Violation
+
+Need:
+- Remove remaining redundancy.
+
+---
+
+# Entire Flow
+
+```text
+Business Rules
+        ↓
+Functional Dependencies
+        ↓
+Armstrong's Axioms
+(Derive hidden FDs)
+        ↓
+Attribute Closure
+(What can X determine?)
+        ↓
+Candidate Keys
+(Who identifies every row?)
+        ↓
+2NF
+(Removes Partial Dependency)
+        ↓
+3NF
+(Removes Transitive Dependency)
+        ↓
+BCNF
+(Every Determinant must be a Candidate Key)
+```
+
+# One-Line Revision
+
+```text
+Business Rules
+↓
+Real-world facts
+
+FDs
+↓
+Write the facts mathematically
+
+Armstrong
+↓
+Find hidden FDs
+
+Closure
+↓
+Find everything an attribute determines
+
+Candidate Key
+↓
+Find who uniquely identifies a row
+
+2NF
+↓
+Remove Partial Dependency
+
+3NF
+↓
+Remove Transitive Dependency
+
+BCNF
+↓
+Every determinant must be a Candidate Key
+```
 ---
 
 # Bridge
