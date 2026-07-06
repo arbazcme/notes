@@ -1,28 +1,14 @@
 # DBMS 07 - Concurrency Control
 
 # Navigation
-
 - [1. Why Do We Need Concurrency Control?](#1-why-do-we-need-concurrency-control)
-  - [Recall Concurrent Execution](#recall-concurrent-execution)
-  - [The Core Problem](#the-core-problem)
-  - [The Goal of Concurrency Control](#the-goal-of-concurrency-control)
-  - [Interview Questions](#interview-questions)
-
 - [2. Lock-Based Protocols](#2-lock-based-protocols)
-  - [What Is A Lock?](#what-is-a-lock)
-  - [Shared Lock (S Lock)](#shared-lock)
-  - [Exclusive Lock (X Lock)](#exclusive-lock)
-  - [Lock Compatibility](#lock-compatibility)
-
-- [3. Two-Phase Locking (2PL)](#3-two-phase-locking)
-
-- [4. Deadlocks](#4-deadlocks)
-
-- [5. Timestamp Protocol](#5-timestamp-protocol)
-
-- [6. Serializability](#6-serializability)
-
-- [7. Recoverable Schedules](#7-recoverable-schedules)
+  - [2.1 Shared Lock (S Lock)](#21-shared-lock-s-lock)
+  - [2.2 Exclusive Lock (X Lock)](#22-exclusive-lock-x-lock)
+- [3. Two-Phase Locking (2PL)](#3-two-phase-locking-2pl)
+- [4. Timestamp Ordering Protocol](#5-timestamp-ordering-protocol)
+- [5. Recoverable Schedules](#7-recoverable-schedules)
+- [Revision](#dbms07-revision)
 
   # 1. Why Do We Need Concurrency Control?
 
