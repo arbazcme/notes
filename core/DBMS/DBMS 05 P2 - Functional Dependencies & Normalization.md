@@ -1,665 +1,986 @@
-# DBMS 05 P2 - Functional Dependencies & NormalizationF
+# DBMS 05 P2 - Functional Dependencies & Normalization.md
 
----
+# Navigation
 
-## Navigation
+- [6. Armstrong's Axioms](#6-armstrongs-axioms)
+  - [Why Do We Need Them?](#why-do-we-need-them)
+  - [Think Of Them Like Mathematics](#think-of-them-like-mathematics)
+  - [The Three Basic Axioms](#the-three-basic-axioms)
+  - [6.1 Reflexivity Rule](#61-reflexivity-rule)
+  - [6.2 Augmentation Rule](#62-augmentation-rule)
+  - [6.3 Transitivity Rule](#63-transitivity-rule)
+  - [Derived Rules](#derived-rules)
+  - [Summary Table](#summary-table)
+  - [Interview Questions](#interview-questions)
+  - [Mental Model](#mental-model)
 
-- [1. Candidate Keys](#1-candidate-keys)
-  - [Candidate Key vs Super Key](#candidate-key-vs-super-key)
-  - [Primary Key](#primary-key)
-  - [How To Find A Candidate Key?](#how-to-find-a-candidate-key)
-- [2. Minimal Cover](#2-minimal-cover)
-  - [Why Do We Need A Minimal Cover?](#why-do-we-need-a-minimal-cover)
-  - [Properties Of A Minimal Cover](#properties-of-a-minimal-cover)
-  - [The Algorithm](#the-algorithm)
-- [3. First Normal Form (1NF)](#3-first-normal-form-1nf)
-- [4. Second Normal Form (2NF)](#4-second-normal-form-2nf)
-  - [How To Check 2NF](#how-to-check-2nf)
-- [5. Third Normal Form (3NF)](#5-third-normal-form-3nf)
-  - [How To Detect 3NF](#how-to-detect-3nf)
-- [6. Boyce-Codd Normal Form (BCNF)](#6-boyce-codd-normal-form-bcnf)
-  - [Difference Between 3NF and BCNF](#difference-between-3nf-and-bcnf)
-  - [2NF vs 3NF vs BCNF](#2nf-vs-3nf-vs-bcnf)
-- [7. Fourth Normal Form (4NF) – Overview](#7-fourth-normal-form-4nf---overview)
-- [8. Fifth Normal Form (5NF) – Overview](#8-fifth-normal-form-5nf---overview)
-- [9. Denormalization](#9-denormalization)
-- [Complete Revision](#complete-revision)
-  - [Normal Forms](#normal-forms)
-  - [Dependency Revision](#dependency-revision)
-  - [Key Revision](#key-revision)
-  - [Entire Chapter Mental Model](#entire-chapter-mental-model)
-  - [Interview Cheat Sheet](#interview-cheat-sheet)
+- [7. Attribute Closure](#7-attribute-closure)
+  - [What Is Attribute Closure?](#what-is-attribute-closure)
+  - [Why Do We Need Attribute Closure?](#why-do-we-need-attribute-closure)
+  - [The Closure Algorithm](#the-closure-algorithm)
+  - [Examples](#example-1)
+  - [Practice Problems](#practice-1)
+  - [Interview Questions](#interview-questions-1)
 
-# 1. Candidate Keys
+- [Functional Dependencies → Normalization (Interview Flow)](#functional-dependencies--normalization-interview-flow)
+  - [Business Rules](#step-1-business-rules)
+  - [Functional Dependencies](#step-2-convert-into-functional-dependencies)
+  - [Armstrong's Axioms](#step-3-armstrongs-axioms)
+  - [Attribute Closure](#step-4-attribute-closure)
+  - [Check 2NF](#step-5-check-2nf)
+  - [Check 3NF](#step-6-check-3nf)
+  - [Check BCNF](#step-7-bcnf)
+  - [Final Flow](#final-flow)
+  - [Interview Summary](#interview-summary)
 
-So far,
+- [Formal Rules of Normalization](#formal-rules-of-normalization-interview)
+  - [2NF](#2nf-second-normal-form)
+  - [3NF](#3nf-third-normal-form)
+  - [BCNF](#bcnf-boyce-codd-normal-form)
+  - [Quick Revision](#quick-revision)
 
-we have learned
+- [Normalization Interview Checklist](#normalization-interview-checklist)
 
-- Functional Dependency
-- Armstrong's Axioms
-- Attribute Closure
+- [Fourth Normal Form (4NF)](#14-fourth-normal-form-4nf)
+  
+- [Fifth Normal Form (5NF)](#15-fifth-normal-form-5nf)
+  
+# 6. Armstrong's Axioms
+
+In the previous chapter,
+
+we learned
+
+Functional Dependencies.
+
+Example
+
+```text
+StudentID → Name
+```
 
 Question:
 
-Why did we learn
+Suppose
 
-all these topics?
+we already know
 
-Because they help us answer
+some Functional Dependencies.
 
-one important question.
+Can we discover
+
+new Functional Dependencies
+
+without
+
+looking at
+
+the data again?
 
 ```text
-Can this attribute
-
-(or set of attributes)
-
-uniquely identify
-
-every row
-
-in the table?
+Yes.
 ```
 
-If yes,
+The rules
 
-then it may be
+used to derive
 
-a Candidate Key.
+new Functional Dependencies
+
+are called
+
+```text
+Armstrong's Axioms.
+```
 
 ---
 
-# Let's Start With A Simple Table
-
-Student
-
-| StudentID | Name | Department | Age |
-|-----------|------|------------|-----|
-|101|Arbaaz|CSE|21|
-|102|Rahul|ECE|20|
-|103|Priya|CSE|22|
+# Why Do We Need Them?
 
 Suppose
 
-the Functional Dependencies are
+we know
+
+```text
+A → B
+```
+
+Question:
+
+Can we conclude
+
+```text
+A → A
+```
+
+What about
+
+```text
+A → AB
+```
+
+What about
+
+```text
+A → C
+```
+
+How do we know
+
+which conclusions
+
+are correct?
+
+We need
+
+a set of rules.
+
+Those rules
+
+are
+
+Armstrong's Axioms.
+
+---
+
+# Think Of Them Like Mathematics
+
+Example
+
+Suppose
+
+we know
+
+```text
+2 = 2
+```
+
+Then we can safely say
+
+```text
+2 + 1 = 2 + 1
+```
+
+Nobody questions that.
+
+It follows
+
+from
+
+a mathematical rule.
+
+Similarly,
+
+Functional Dependencies
+
+also have
+
+logical rules.
+
+---
+
+# The Three Basic Axioms
+
+Everything
+
+is built
+
+using
+
+only three rules.
+
+```text
+1. Reflexivity
+
+2. Augmentation
+
+3. Transitivity
+```
+
+All other rules
+
+are derived
+
+from these three.
+
+---
+
+# 6.1 Reflexivity Rule
+
+Rule
+
+```text
+If
+
+Y ⊆ X
+
+then
+
+X → Y
+```
+
+Looks scary.
+
+Let's make it simple.
+
+---
+
+Suppose
+
+```text
+(StudentID, Name)
+```
+
+Question:
+
+Does knowing
+
+(StudentID, Name)
+
+allow us
+
+to know
+
+StudentID?
+
+Obviously.
+
+Yes.
+
+StudentID
+
+is already present.
+
+---
+
+Example
+
+```text
+(A,B)
+
+↓
+
+A
+```
+
+Valid.
+
+---
+
+Another
+
+```text
+(A,B,C)
+
+↓
+
+(B,C)
+```
+
+Also valid.
+
+---
+
+General Rule
+
+If
+
+the right side
+
+already exists
+
+inside
+
+the left side,
+
+the dependency
+
+is always true.
+
+This is exactly
+
+the
+
+Trivial Dependency
+
+we studied earlier.
+
+---
+
+Examples
+
+```text
+A → A
+```
+
+```text
+(A,B) → A
+```
+
+```text
+(A,B,C) → C
+```
+
+```text
+(A,B,C) → (A,C)
+```
+
+All valid.
+
+---
+
+# Why Is It Called Reflexivity?
+
+Think
+
+of a mirror.
+
+A mirror
+
+reflects
+
+itself.
+
+Similarly,
+
+a set of attributes
+
+always
+
+determines itself.
+
+---
+
+# 6.2 Augmentation Rule
+
+Suppose
+
+we know
+
+```text
+StudentID
+
+↓
+
+Name
+```
+
+Question
+
+Can we safely add
+
+Department
+
+to both sides?
+
+```text
+(StudentID, Department)
+
+↓
+
+(Name, Department)
+```
+
+Yes.
+
+Nothing becomes false.
+
+This is called
+
+Augmentation.
+
+---
+
+General Rule
+
+If
+
+```text
+X → Y
+```
+
+then
+
+```text
+XZ → YZ
+```
+
+where
+
+Z
+
+can be
+
+anything.
+
+---
+
+Example
+
+We know
+
+```text
+EmpID → Salary
+```
+
+Add
+
+Department
+
+to both sides.
+
+```text
+(EmpID, Department)
+
+↓
+
+(Salary, Department)
+```
+
+Still true.
+
+---
+
+Think Like This
+
+Suppose
+
+you know
+
+someone's
+
+Aadhaar Number
+
+can identify
+
+the person.
+
+Adding
+
+their favourite colour
+
+doesn't destroy
+
+that relationship.
+
+You simply know
+
+more information.
+
+---
+
+# Important Point
+
+You must
+
+add
+
+the same attribute
+
+to both sides.
+
+Correct
+
+```text
+A → B
+
+↓
+
+AC → BC
+```
+
+Wrong
+
+```text
+A → B
+
+↓
+
+AC → B
+```
+
+This is NOT
+
+Augmentation.
+
+---
+
+# 6.3 Transitivity Rule
+
+This is
+
+the most famous one.
+
+Suppose
+
+we know
+
+```text
+StudentID
+
+↓
+
+Department
+```
+
+Also
+
+```text
+Department
+
+↓
+
+HOD
+```
+
+Question
+
+Can StudentID
+
+determine HOD?
+
+Of course.
+
+If
+
+StudentID
+
+gives Department,
+
+and Department
+
+gives HOD,
+
+then
+
+StudentID
+
+indirectly
+
+gives HOD.
+
+So,
+
+```text
+StudentID
+
+↓
+
+HOD
+```
+
+This is
+
+Transitivity.
+
+---
+
+General Rule
+
+If
+
+```text
+X → Y
+
+and
+
+Y → Z
+```
+
+then
+
+```text
+X → Z
+```
+
+---
+
+Another Example
+
+Suppose
+
+```text
+RollNo → StudentID
+
+StudentID → Name
+```
+
+Then
+
+```text
+RollNo → Name
+```
+
+---
+
+Real-Life Example
+
+Suppose
+
+PIN Code
+
+↓
+
+City
+
+City
+
+↓
+
+State
+
+Then
+
+PIN Code
+
+↓
+
+State
+
+You don't
+
+need
+
+another lookup.
+
+---
+
+# Why Is It Important?
+
+Remember
+
+Transitive Dependency?
+
+```text
+StudentID
+
+↓
+
+Department
+
+↓
+
+HOD
+```
+
+That concept
+
+came directly
+
+from this rule.
+
+---
+
+# Derived Rules
+
+Books often
+
+teach
+
+more rules.
+
+Actually,
+
+they are
+
+derived
+
+from
+
+the three axioms.
+
+---
+
+## Union Rule
+
+Suppose
+
+```text
+A → B
+
+A → C
+```
+
+Then
+
+```text
+A → BC
+```
+
+Example
+
+```text
+StudentID
+
+↓
+
+Name
+
+StudentID
+
+↓
+
+Department
+```
+
+Therefore
+
+```text
+StudentID
+
+↓
+
+(Name, Department)
+```
+
+---
+
+## Decomposition Rule
+
+Suppose
+
+```text
+A → BC
+```
+
+Then
+
+```text
+A → B
+```
+
+and
+
+```text
+A → C
+```
+
+Example
+
+```text
+StudentID
+
+↓
+
+(Name, Department)
+```
+
+Means
 
 ```text
 StudentID → Name
 
 StudentID → Department
-
-StudentID → Age
 ```
-
-Question:
-
-If I know
-
-StudentID,
-
-what can I determine?
-
-Answer
-
-```text
-Name
-
-Department
-
-Age
-```
-
-Along with
-
-StudentID itself,
-
-we now know
-
-every attribute.
-
-Therefore,
-
-```text
-StudentID⁺
-
-=
-
-{StudentID,
-Name,
-Department,
-Age}
-```
-
-Notice something.
-
-The closure contains
-
-every attribute
-
-of the relation.
-
-That means
-
-StudentID
-
-can uniquely identify
-
-every row.
-
-StudentID
-
-is a Candidate Key.
 
 ---
 
-# Formal Definition
+## Pseudo-Transitivity
 
-A Candidate Key
+Looks scary.
 
-is
+Actually
 
-```text
-The smallest
-
-set of attributes
-
-whose closure
-
-contains
-
-every attribute
-
-of the relation.
-```
-
-Two conditions
-
-must always hold.
-
----
-
-## Condition 1
-
-It must determine
-
-every attribute.
-
-Suppose
-
-our relation is
-
-```text
-R(A,B,C,D)
-```
-
-If
-
-```text
-A⁺
-
-=
-
-{A,B,C,D}
-```
-
-then
-
-A satisfies
-
-Condition 1.
-
----
-
-## Condition 2
-
-It must be
-
-minimal.
-
-This is
-
-the most important part.
-
----
-
-# What Does Minimal Mean?
+very easy.
 
 Suppose
 
 ```text
-A
-
-↓
-
-B,C,D
-```
-
-Question:
-
-Can
-
-AB
-
-also determine
-
-everything?
-
-Of course.
-
-Because
-
-A alone
-
-already could.
-
-Then
-
-AB
-
-is not minimal.
-
-It contains
-
-an unnecessary attribute.
-
-Therefore,
-
-AB
-
-is NOT
-
-a Candidate Key.
-
----
-
-Example
-
-Suppose
-
-```text
-A⁺
-
-=
-
-{A,B,C,D}
-```
-
-Question
-
-Is
-
-```text
-AB
-```
-
-a Candidate Key?
-
-No.
-
-Because
-
-A alone
-
-already identifies
-
-everything.
-
-B contributes
-
-nothing.
-
----
-
-# Candidate Key vs Super Key
-
-This is
-
-one of
-
-the most asked
-
-interview questions.
-
-Suppose
-
-A
-
-is a Candidate Key.
-
-Question:
-
-Can
-
-AB
-
-identify
-
-every row?
-
-Yes.
-
-Because
-
-A already could.
-
-Question:
-
-Can
-
-ABC
-
-identify
-
-every row?
-
-Also yes.
-
-Question:
-
-Can
-
-ABCD
-
-identify
-
-every row?
-
-Still yes.
-
-These are called
-
-Super Keys.
-
----
-
-## Definition
-
-A Super Key
-
-is
-
-```text
-Any set
-
-of attributes
-
-that uniquely identifies
-
-every row.
-```
-
-Some Super Keys
-
-contain
-
-extra attributes.
-
-Candidate Keys
-
-never do.
-
----
-
-# Visual
-
-Suppose
-
-A
-
-is enough.
-
-```text
-A
-
-↓
-
-Candidate Key
-```
-
-Now add
-
-B.
-
-```text
-AB
-
-↓
-
-Super Key
-```
-
-Add
-
-C.
-
-```text
-ABC
-
-↓
-
-Super Key
-```
-
-Add
-
-D.
-
-```text
-ABCD
-
-↓
-
-Super Key
-```
-
-Only
-
-the smallest
-
-one
-
-is the Candidate Key.
-
----
-
-# Real-Life Example
-
-Suppose
-
-your Aadhaar Number
-
-uniquely identifies you.
-
-Question
-
-Can
-
-```text
-(Aadhaar Number)
-```
-
-identify you?
-
-Yes.
-
-Candidate Key.
-
----
-
-Now consider
-
-```text
-(Aadhaar Number,
-Phone Number)
-```
-
-Can it identify you?
-
-Yes.
-
-But
-
-Phone Number
-
-was unnecessary.
-
-Therefore,
-
-it is
-
-only
-
-a Super Key.
-
----
-
-# Primary Key
-
-Question:
-
-If there are
-
-multiple Candidate Keys,
-
-which one
-
-becomes
-
-the Primary Key?
-
-Answer:
-
-The database designer
-
-chooses
-
-one Candidate Key
-
-as
-
-the Primary Key.
-
----
-
-Example
-
-Employee
-
-| EmpID | Email | Phone |
-|-------|-------|-------|
-
-Suppose
-
-both
-
-EmpID
+A → B
 
 and
 
-Email
-
-are unique.
+BC → D
+```
 
 Then
 
 ```text
-EmpID
-
-↓
-
-Candidate Key
+AC → D
 ```
 
-```text
-Email
+You rarely
 
-↓
+need this
 
-Candidate Key
-```
+for interviews,
 
-Question
+but know
 
-Can both
+it exists.
 
-be Primary Keys?
+---
+
+# Summary Table
+
+| Rule | Meaning |
+|------|---------|
+| Reflexivity | Attributes determine themselves |
+| Augmentation | Add same attributes to both sides |
+| Transitivity | Chain dependencies |
+| Union | Combine dependencies |
+| Decomposition | Split dependencies |
+| Pseudo-Transitivity | Extended transitivity |
+
+---
+
+# Do We Memorize Them?
 
 No.
 
-A table
+Understand
 
-has
+the logic.
 
-only one
+Most interviewers
 
-Primary Key.
+care more about
 
-The remaining
+whether you can
 
-Candidate Keys
+apply them
 
-become
+than
 
-Alternate Keys.
+recite them.
 
 ---
 
-# Relationship Between Keys
+# Interview Questions
+
+## What are Armstrong's Axioms?
 
 ```text
-Super Keys
+Rules
 
-↓
+used to derive
 
-Many
+new Functional Dependencies
 
--------------------
-
-Candidate Keys
-
-↓
-
-Minimal Super Keys
-
--------------------
-
-Primary Key
-
-↓
-
-One chosen
-
-Candidate Key
-
--------------------
-
-Alternate Keys
-
-↓
-
-Remaining
-
-Candidate Keys
+from existing ones.
 ```
 
 ---
 
-# How To Find A Candidate Key?
+## Name the three basic axioms.
 
-We use
+```text
+Reflexivity
 
-Attribute Closure.
+Augmentation
+
+Transitivity
+```
+
+---
+
+## Which three are derived rules?
+
+```text
+Union
+
+Decomposition
+
+Pseudo-Transitivity
+```
+
+---
+
+## Which axiom says
+
+if
+
+A → B
+
+and
+
+B → C
+
+then
+
+A → C?
+
+```text
+Transitivity
+```
+
+---
+
+# Mental Model
+
+Imagine
+
+a treasure map.
+
+You already know
+
+three roads.
+
+```text
+Road 1
+
+Road 2
+
+Road 3
+```
+
+Armstrong's Axioms
+
+are simply
+
+the rules
+
+that let you
+
+combine roads
+
+to discover
+
+new routes
+
+without
+
+exploring
+
+the entire map again.
+
+That's exactly
+
+what we do
+
+with Functional Dependencies.
+
+---
+
+# Bridge
+
+Now we know
+
+how to derive
+
+new Functional Dependencies.
+
+Question:
 
 Suppose
 
-Relation
+we have
 
-```text
-R(A,B,C,D)
-```
+10 Functional Dependencies.
 
-FDs
+How do we know
+
+everything
+
+that
+
+one attribute
+
+can determine?
+
+Example
+
+Given
 
 ```text
 A → B
@@ -671,13 +992,870 @@ C → D
 
 Question
 
-Find Candidate Key.
+What can
+
+A
+
+determine?
+
+Finding
+
+all possible attributes
+
+is called
+
+```text
+Attribute Closure.
+```
+
+Attribute Closure
+
+is one of
+
+the most frequently asked
+
+DBMS interview problems.
+
+# 7. Attribute Closure
+
+So far,
+
+we have learned
+
+Functional Dependencies.
+
+Example
+
+```text
+StudentID → Name
+
+StudentID → Department
+
+Department → HOD
+```
+
+Question:
+
+If I know
+
+only
+
+StudentID,
+
+what information
+
+can I determine?
+
+Can I determine
+
+Name?
+
+Yes.
+
+Department?
+
+Yes.
+
+HOD?
+
+Yes.
+
+How did we know that?
+
+We followed
+
+the Functional Dependencies.
+
+The collection
+
+of every attribute
+
+that can be determined
+
+from a given attribute set
+
+is called
+
+```text
+Attribute Closure.
+```
 
 ---
 
+# What Is Attribute Closure?
+
+Suppose
+
+we have
+
+the following Functional Dependencies.
+
+```text
+A → B
+
+B → C
+
+C → D
+```
+
+Question:
+
+If someone gives you
+
+A,
+
+what else
+
+can you determine?
+
 Step 1
 
-Compute
+```text
+A
+```
+
+Using
+
+```text
+A → B
+```
+
+Now we know
+
+```text
+A,B
+```
+
+Using
+
+```text
+B → C
+```
+
+Now we know
+
+```text
+A,B,C
+```
+
+Using
+
+```text
+C → D
+```
+
+Now we know
+
+```text
+A,B,C,D
+```
+
+Therefore,
+
+the closure of A is
+
+```text
+A⁺ = {A,B,C,D}
+```
+
+Read it as
+
+```text
+A Plus
+```
+
+or
+
+```text
+Closure of A
+```
+
+---
+
+# Definition
+
+The Attribute Closure
+
+of an attribute set X
+
+is
+
+```text
+Every attribute
+
+that can be
+
+functionally determined
+
+using
+
+the given
+
+Functional Dependencies.
+```
+
+---
+
+# Why Do We Need Attribute Closure?
+
+Question:
+
+Why are we
+
+finding closures?
+
+Because they help us
+
+answer questions like:
+
+```text
+Can this attribute
+
+determine
+
+the whole table?
+```
+
+If yes,
+
+it is probably
+
+a Candidate Key.
+
+We'll study that
+
+next.
+
+So,
+
+Closure is
+
+the tool.
+
+Candidate Key
+
+is
+
+the application.
+
+---
+
+# The Closure Algorithm
+
+This is the only algorithm
+
+you need.
+
+Suppose
+
+we need
+
+A⁺.
+
+### Step 1
+
+Start
+
+with
+
+A itself.
+
+```text
+A⁺
+
+=
+
+{A}
+```
+
+---
+
+### Step 2
+
+Look at
+
+every Functional Dependency.
+
+Whenever
+
+the left side
+
+is already
+
+inside the closure,
+
+add
+
+the right side.
+
+---
+
+### Step 3
+
+Repeat
+
+until
+
+nothing new
+
+can be added.
+
+Done.
+
+That final set
+
+is
+
+the closure.
+
+---
+
+# Example 1
+
+FDs
+
+```text
+A → B
+
+B → C
+
+C → D
+```
+
+Find
+
+A⁺.
+
+---
+
+Start
+
+```text
+A⁺={A}
+```
+
+---
+
+A → B
+
+```text
+A⁺={A,B}
+```
+
+---
+
+B → C
+
+```text
+A⁺={A,B,C}
+```
+
+---
+
+C → D
+
+```text
+A⁺={A,B,C,D}
+```
+
+Nothing more.
+
+Final Answer
+
+```text
+A⁺={A,B,C,D}
+```
+
+---
+
+# Example 2
+
+FDs
+
+```text
+A → B
+
+A → C
+
+C → D
+```
+
+Find
+
+A⁺.
+
+Start
+
+```text
+{A}
+```
+
+---
+
+Apply
+
+A → B
+
+```text
+{A,B}
+```
+
+---
+
+Apply
+
+A → C
+
+```text
+{A,B,C}
+```
+
+---
+
+Apply
+
+C → D
+
+```text
+{A,B,C,D}
+```
+
+Done.
+
+---
+
+# Example 3
+
+FDs
+
+```text
+A → B
+
+B → C
+
+CD → E
+
+E → F
+```
+
+Find
+
+A⁺.
+
+---
+
+Start
+
+```text
+{A}
+```
+
+---
+
+A → B
+
+```text
+{A,B}
+```
+
+---
+
+B → C
+
+```text
+{A,B,C}
+```
+
+---
+
+Can we use
+
+CD → E?
+
+No.
+
+We have
+
+C
+
+but
+
+not D.
+
+Cannot apply.
+
+---
+
+Can we use
+
+E → F?
+
+No.
+
+No E yet.
+
+---
+
+Nothing more.
+
+Answer
+
+```text
+A⁺={A,B,C}
+```
+
+Notice
+
+just because
+
+an FD exists,
+
+doesn't mean
+
+we can use it.
+
+The entire
+
+left side
+
+must already
+
+be available.
+
+---
+
+# Example 4
+
+FDs
+
+```text
+AB → C
+
+C → D
+
+D → E
+```
+
+Find
+
+A⁺.
+
+Start
+
+```text
+{A}
+```
+
+Question:
+
+Can we use
+
+AB → C?
+
+No.
+
+Missing B.
+
+Nothing happens.
+
+Final
+
+```text
+A⁺={A}
+```
+
+---
+
+Now find
+
+(AB)⁺.
+
+Start
+
+```text
+{A,B}
+```
+
+AB → C
+
+```text
+{A,B,C}
+```
+
+C → D
+
+```text
+{A,B,C,D}
+```
+
+D → E
+
+```text
+{A,B,C,D,E}
+```
+
+Done.
+
+Notice
+
+the difference.
+
+One missing attribute
+
+prevented
+
+the chain
+
+from starting.
+
+---
+
+# Common Mistake
+
+Students often think
+
+if they have
+
+half
+
+the left side,
+
+they can use
+
+the dependency.
+
+Wrong.
+
+Suppose
+
+```text
+AB → C
+```
+
+Having only
+
+A
+
+does NOT
+
+allow
+
+C.
+
+Having only
+
+B
+
+does NOT
+
+allow
+
+C.
+
+Need
+
+both.
+
+---
+
+# Another Example
+
+FDs
+
+```text
+RollNo → StudentID
+
+StudentID → Department
+
+Department → HOD
+```
+
+Find
+
+RollNo⁺.
+
+Start
+
+```text
+{RollNo}
+```
+
+↓
+
+```text
+StudentID
+```
+
+↓
+
+```text
+Department
+```
+
+↓
+
+```text
+HOD
+```
+
+Answer
+
+```text
+{RollNo,
+StudentID,
+Department,
+HOD}
+```
+
+---
+
+# Shortcut
+
+Think of
+
+each Functional Dependency
+
+as
+
+a door.
+
+Question:
+
+Can I open
+
+this door?
+
+Only if
+
+I already possess
+
+every key
+
+on the left side.
+
+Open the door,
+
+collect
+
+new attributes,
+
+then try
+
+opening
+
+more doors.
+
+Eventually,
+
+no doors
+
+can be opened.
+
+That is
+
+the closure.
+
+---
+
+# Practice 1
+
+FDs
+
+```text
+A → B
+
+B → C
+
+C → D
+
+D → E
+```
+
+Find
+
+```text
+A⁺
+```
+
+Answer
+
+```text
+{A,B,C,D,E}
+```
+
+---
+
+# Practice 2
+
+FDs
+
+```text
+AB → C
+
+C → D
+
+A → E
+```
+
+Find
+
+```text
+A⁺
+```
+
+Solution
+
+```text
+Start
+
+↓
+
+{A}
+
+↓
+
+A→E
+
+↓
+
+{A,E}
+
+↓
+
+Stop
+```
+
+Cannot use
+
+AB→C
+
+because
+
+B
+
+is missing.
+
+Final
+
+```text
+{A,E}
+```
+
+---
+
+# Practice 3
+
+FDs
+
+```text
+A → BC
+
+C → D
+
+D → E
+```
+
+Find
 
 A⁺.
 
@@ -689,2293 +1867,166 @@ Start
 
 ↓
 
-A→B
-
-```text
-{A,B}
-```
-
-↓
-
-B→C
-
 ```text
 {A,B,C}
 ```
 
 ↓
-
-C→D
 
 ```text
 {A,B,C,D}
 ```
 
-Closure
-
-contains
-
-every attribute.
-
-Question
-
-Can we remove
-
-anything
-
-from A?
-
-No.
-
-Single attribute.
-
-Therefore,
-
-```text
-A
-
 ↓
 
-Candidate Key
-```
-
----
-
-# Example 2
-
-Relation
-
 ```text
-R(A,B,C)
-```
-
-FDs
-
-```text
-AB → C
-```
-
-Find
-
-Candidate Key.
-
----
-
-Try
-
-A⁺
-
-```text
-{A}
-```
-
-Nothing happens.
-
-Not enough.
-
----
-
-Try
-
-B⁺
-
-```text
-{B}
-```
-
-Nothing.
-
----
-
-Try
-
-AB⁺
-
-Start
-
-```text
-{A,B}
-```
-
-↓
-
-AB→C
-
-```text
-{A,B,C}
-```
-
-All attributes.
-
-Question
-
-Can A
-
-be removed?
-
-No.
-
-Question
-
-Can B
-
-be removed?
-
-No.
-
-Therefore,
-
-```text
-AB
-
-↓
-
-Candidate Key
-```
-
----
-
-# Example 3
-
-Relation
-
-```text
-R(A,B,C,D)
-```
-
-FDs
-
-```text
-A → B
-
-C → D
-```
-
-Question
-
-Find Candidate Key.
-
----
-
-Try
-
-A⁺
-
-```text
-{A,B}
-```
-
-Missing
-
-C,D.
-
----
-
-Try
-
-C⁺
-
-```text
-{C,D}
-```
-
-Missing
-
-A,B.
-
----
-
-Try
-
-AC⁺
-
-```text
-{A,C}
-
-↓
-
-A→B
-
-↓
-
-{A,B,C}
-
-↓
-
-C→D
-
-↓
-
-{A,B,C,D}
-```
-
-All attributes.
-
-Question
-
-Can A
-
-be removed?
-
-No.
-
-Can C
-
-be removed?
-
-No.
-
-Therefore
-
-```text
-AC
-
-↓
-
-Candidate Key
-```
-
----
-
-# Shortcut
-
-Whenever solving
-
-Candidate Key questions,
-
-always remember.
-
-```text
-Closure
-
-first.
-
-Minimality
-
-second.
-```
-
-Students
-
-often forget
-
-the second step.
-
----
-
-# Common Mistakes
-
-❌
-
-Finding
-
-a Super Key
-
-and calling it
-
-a Candidate Key.
-
----
-
-❌
-
-Checking only
-
-whether
-
-closure
-
-contains
-
-all attributes.
-
-You must
-
-also verify
-
-minimality.
-
----
-
-❌
-
-Ignoring
-
-composite keys.
-
-Sometimes
-
-one attribute
-
-is never enough.
-
----
-
-# Interview Questions
-
-## What is
-
-a Candidate Key?
-
-```text
-The smallest
-
-set of attributes
-
-whose closure
-
-contains
-
-every attribute
-
-of the relation.
-```
-
----
-
-## Difference
-
-between
-
-Super Key
-
-and
-
-Candidate Key?
-
-| Super Key | Candidate Key |
-|------------|---------------|
-| Identifies every row | Identifies every row |
-| May contain extra attributes | Minimal |
-| Many possible | One or more |
-
----
-
-## Can a table
-
-have multiple
-
-Candidate Keys?
-
-```text
-Yes.
-```
-
----
-
-## Can a table
-
-have multiple
-
-Primary Keys?
-
-```text
-No.
-```
-
-Only one
-
-Primary Key
-
-can be chosen.
-
----
-
-# Mental Model
-
-Imagine
-
-a bunch of keys
-
-on a keychain.
-
-Some keys
-
-can open
-
-every room
-
-in a building.
-
-Those are
-
-Super Keys.
-
-Now remove
-
-every unnecessary key.
-
-The smallest
-
-keyring
-
-that still opens
-
-every room
-
-is the
-
-Candidate Key.
-
----
-
-# Bridge
-
-Finding Candidate Keys
-
-is useful,
-
-but interview questions
-
-often give
-
-dozens of
-
-Functional Dependencies.
-
-Many of them
-
-are redundant.
-
-Question:
-
-Can we simplify
-
-the Functional Dependencies
-
-without changing
-
-their meaning?
-
-Yes.
-
-This process
-
-is called
-
-```text
-Minimal Cover.
-```
-
-Minimal Cover
-
-helps reduce
-
-unnecessary dependencies
-
-before normalization.
-
-# 2. Minimal Cover
-
-So far,
-
-we have learned
-
-Functional Dependencies.
-
-Example
-
-```text
-A → B
-
-B → C
-
-A → C
-```
-
-Question:
-
-Do we really need
-
-all three
-
-Functional Dependencies?
-
-Notice something.
-
-We already know
-
-```text
-A → B
-```
-
-and
-
-```text
-B → C
-```
-
-Using
-
-Transitivity,
-
-we automatically get
-
-```text
-A → C
-```
-
-Therefore,
-
-```text
-A → C
-```
-
-is unnecessary.
-
-We can remove it.
-
-The meaning
-
-of the database
-
-doesn't change.
-
-This idea
-
-is called
-
-```text
-Minimal Cover.
-```
-
----
-
-# Why Do We Need A Minimal Cover?
-
-Suppose
-
-a database designer
-
-writes
-
-100 Functional Dependencies.
-
-Question
-
-Do all of them
-
-contain
-
-new information?
-
-Not always.
-
-Some are
-
-duplicates.
-
-Some are
-
-derived from others.
-
-Some contain
-
-unnecessary attributes.
-
-Minimal Cover
-
-removes
-
-all unnecessary information
-
-while keeping
-
-exactly the same meaning.
-
-Think of it as
-
-simplifying
-
-an equation
-
-without changing
-
-its value.
-
----
-
-# Definition
-
-A Minimal Cover
-
-is
-
-the smallest possible
-
-set of Functional Dependencies
-
-that
-
-preserves
-
-exactly the same information
-
-as
-
-the original set.
-
-Nothing useful
-
-is lost.
-
-Only redundancy
-
-is removed.
-
----
-
-# Properties Of A Minimal Cover
-
-A Functional Dependency Set
-
-is called
-
-Minimal
-
-when
-
-all three conditions
-
-are satisfied.
-
----
-
-## Condition 1
-
-One attribute
-
-on the
-
-right side.
-
-Wrong
-
-```text
-A → BC
-```
-
-Split it into
-
-```text
-A → B
-
-A → C
-```
-
-Every Functional Dependency
-
-must have
-
-only one attribute
-
-on the right side.
-
----
-
-## Condition 2
-
-No unnecessary attributes
-
-on the
-
-left side.
-
-Suppose
-
-```text
-AB → C
-```
-
-Question
-
-Do we really need
-
-both
-
-A
-
-and
-
-B?
-
-Suppose
-
-A alone
-
-can determine
-
-C.
-
-Then
-
-B
-
-is unnecessary.
-
-We simplify it.
-
-```text
-AB → C
-
-↓
-
-A → C
-```
-
-Now
-
-the dependency
-
-is smaller.
-
----
-
-## Condition 3
-
-No redundant
-
-Functional Dependencies.
-
-Suppose
-
-```text
-A → B
-
-B → C
-
-A → C
-```
-
-Question
-
-Do we need
-
-A → C?
-
-No.
-
-It already follows
-
-from
-
-the other two.
-
-Delete it.
-
----
-
-# The Algorithm
-
-Whenever
-
-you are asked
-
-to find
-
-a Minimal Cover,
-
-follow
-
-three steps.
-
-```text
-Step 1
-
-Split
-
-Right Side
-
-↓
-
-Step 2
-
-Remove
-
-Extra Attributes
-
-from Left Side
-
-↓
-
-Step 3
-
-Remove
-
-Redundant
-
-Functional Dependencies
-```
-
-Always
-
-in this order.
-
----
-
-# Example 1
-
-Given
-
-```text
-A → BC
-
-B → C
-```
-
-Find
-
-Minimal Cover.
-
----
-
-Step 1
-
-Split
-
-```text
-A → B
-
-A → C
-
-B → C
+{A,B,C,D,E}
 ```
 
 Done.
 
 ---
 
-Step 2
+# Why Interviewers Love This Topic
 
-Check
+Because
 
-left sides.
+it tests
 
-Every left side
+whether
 
-contains
+you truly understand
 
-one attribute.
+Functional Dependencies.
 
-Nothing to remove.
+Almost every
 
----
+Candidate Key
 
-Step 3
+question
 
-Check redundancy.
+starts with
 
-Question
-
-Can
-
-A → C
-
-be obtained
-
-from
-
-A → B
-
-and
-
-B → C?
-
-Yes.
-
-Using
-
-Transitivity.
-
-Delete it.
-
-Final Answer
-
-```text
-A → B
-
-B → C
-```
-
----
-
-# Example 2
-
-Given
-
-```text
-AB → C
-
-A → C
-```
-
-Question
-
-Do we need
-
-AB → C?
-
-Notice
-
-A alone
-
-already determines
-
-C.
-
-B contributes
-
-nothing.
-
-Therefore,
-
-```text
-AB → C
-
-↓
-
-A → C
-```
-
-Now
-
-both dependencies
-
-are identical.
-
-Keep only one.
-
-Final
-
-```text
-A → C
-```
-
----
-
-# Example 3
-
-Given
-
-```text
-A → BC
-
-C → D
-
-D → E
-```
-
-Step 1
-
-Split.
-
-```text
-A → B
-
-A → C
-
-C → D
-
-D → E
-```
-
-Step 2
-
-No unnecessary
-
-left attributes.
-
----
-
-Step 3
-
-Question
-
-Can
-
-A → C
-
-be removed?
-
-No.
-
-Nothing derives it.
-
-Can
-
-C → D
-
-be removed?
-
-No.
-
-Can
-
-D → E
-
-be removed?
-
-No.
-
-Already minimal.
-
----
-
-# How Do We Check
-
-Whether
-
-A Dependency
-
-Is Redundant?
-
-Temporarily
-
-remove it.
-
-Then
-
-compute
-
-Attribute Closure.
-
-If
-
-the removed dependency
-
-can still
-
-be derived,
-
-it was redundant.
-
-Otherwise,
-
-put it back.
-
----
-
-# Common Mistakes
-
-❌
-
-Thinking
-
-Minimal Cover
-
-changes
-
-the database.
-
-No.
-
-It only removes
-
-unnecessary dependencies.
-
----
-
-❌
-
-Removing
-
-dependencies
-
-without checking
-
-Attribute Closure.
-
-Always verify.
-
----
-
-❌
-
-Forgetting
-
-to split
-
-the right side
-
-before starting.
-
-Always begin
-
-with
-
-Step 1.
-
----
-
-# Why Do We Study
-
-Minimal Cover?
-
-Mainly because
-
-database designers
-
-prefer
-
-the simplest
-
-possible
-
-dependency set.
-
-It also helps
-
-while
-
-decomposing tables
-
-during normalization.
+computing closures.
 
 ---
 
 # Interview Questions
 
-## What is
-
-a Minimal Cover?
+## What is Attribute Closure?
 
 ```text
-The smallest
+The set
 
-equivalent set
+of all attributes
 
-of Functional Dependencies
+that can be determined
 
-containing
+from a given
 
-no redundant information.
+attribute set
+
+using
+
+Functional Dependencies.
 ```
 
 ---
 
-## What are
-
-the three steps?
+## Why is Attribute Closure important?
 
 ```text
-Split
+To find
 
-↓
+Candidate Keys,
 
-Remove Extra Left Attributes
+Super Keys,
 
-↓
+and verify
 
-Remove Redundant Dependencies
+Functional Dependencies.
 ```
 
 ---
 
-## Does
-
-Minimal Cover
-
-change
-
-the meaning
-
-of the Functional Dependencies?
+## When does the algorithm stop?
 
 ```text
-No.
+When
 
-It only removes
+no new attributes
 
-redundancy.
+can be added
+
+to the closure.
 ```
 
 ---
 
 # Mental Model
+# Functional Dependencies → Normalization (Interview Flow)
 
-Suppose
+## Problem
 
-you write
+A college stores marks in one table.
 
-the following directions.
+| StudentID | Subject | StudentName | Department | HOD | Marks |
+|-----------|---------|-------------|------------|-----|-------|
+|101|DBMS|Arbaaz|CSE|Dr. Rao|95|
+|101|OS|Arbaaz|CSE|Dr. Rao|90|
+|102|DBMS|Rahul|ECE|Dr. Sharma|80|
 
-```text
-Go to School.
-
-↓
-
-Turn Left.
-
-↓
-
-Reach Library.
-
-↓
-
-Go to School.
-
-↓
-
-Turn Left.
-
-↓
-
-Reach Library.
-```
-
-The second set
-
-adds
-
-no new information.
-
-Removing it
-
-doesn't change
-
-the route.
-
-Minimal Cover
-
-does exactly
-
-the same thing.
-
-It removes
-
-repeated
-
-or unnecessary
-
-instructions,
-
-while keeping
-
-the destination
-
-exactly the same.
+We want to remove redundancy.
 
 ---
 
-# Bridge
+# Step 1: Business Rules
 
-Now
-
-we finally have
-
-everything needed
-
-for Normalization.
-
-We know
-
-Functional Dependencies.
-
-We know
-
-Candidate Keys.
-
-We know
-
-Partial Dependencies.
-
-We know
-
-Transitive Dependencies.
-
-Now,
-
-we begin
-
-Normal Forms.
-
-Starting with
-
-the simplest one:
-
-# 3. First Normal Form (1NF)
+The college tells us:
 
 ```text
-First Normal Form (1NF)
+One StudentID belongs to one student.
+
+One student belongs to one department.
+
+One department has one HOD.
+
+Marks are stored per Student and Subject.
 ```
 
-Surprisingly,
-
-1NF
-
-has nothing to do
-
-with
-
-Functional Dependencies.
-
-It simply says
-
-that every cell
-
-should contain
-
-one value,
-
-not multiple values.
-
-1NF
-↓
-
-Fix the table structure
-
---------------------
-
-2NF
-↓
-
-Remove Partial Dependency
-
---------------------
-
-3NF
-↓
-
-Remove Transitive Dependency
-
---------------------
-
-BCNF
-↓
-
-Every Determinant
-must be a Candidate Key
-
-# 4. Second Normal Form (2NF)
-
-In 1NF,
-
-we solved
-
-only one problem.
-
-```text
-Multiple values
-
-inside one cell.
-```
-
-Our table
-
-became
-
-well structured.
-
-But
-
-redundancy
-
-still exists.
+These are real-world facts.
 
 ---
 
-# The Problem
+# Step 2: Convert into Functional Dependencies
 
-Suppose
+```text
+StudentID → StudentName
 
-we store
+StudentID → Department
 
-student marks.
+Department → HOD
 
-| StudentID | Subject | StudentName | Marks |
-|-----------|----------|-------------|-------|
-|101|DBMS|Arbaaz|90|
-|101|OS|Arbaaz|80|
-|101|CN|Arbaaz|85|
-|102|DBMS|Rahul|88|
+(StudentID, Subject) → Marks
+```
+
+Now the database understands the business.
+
+---
+
+# Step 3: Armstrong's Axioms
 
 Question:
 
-What is
+Can StudentID determine HOD?
 
-the Candidate Key?
-
-Think.
-
-Can StudentID
-
-alone
-
-identify a row?
-
-No.
-
-Student 101
-
-has multiple subjects.
-
----
-
-Can Subject
-
-alone
-
-identify a row?
-
-No.
-
-Many students
-
-study DBMS.
-
----
-
-Need both.
+Nobody explicitly wrote:
 
 ```text
-(StudentID, Subject)
-```
-
-This is
-
-the Candidate Key.
-
----
-
-# The Functional Dependencies
-
-We know
-
-```text
-(StudentID, Subject)
-
-↓
-
-Marks
-```
-
-Correct.
-
----
-
-We also know
-
-```text
-StudentID
-
-↓
-
-StudentName
-```
-
-Notice something.
-
-StudentName
-
-does NOT
-
-depend
-
-on the whole key.
-
-It depends
-
-only on
-
-StudentID.
-
-Subject
-
-has nothing
-
-to do with
-
-StudentName.
-
-This is called
-
-```text
-Partial Dependency.
-```
-
----
-
-# Why Is This Bad?
-
-Look carefully.
-
-| StudentID | Subject | StudentName |
-|-----------|----------|-------------|
-|101|DBMS|Arbaaz|
-|101|OS|Arbaaz|
-|101|CN|Arbaaz|
-
-Question
-
-How many times
-
-is
-
-"Arbaaz"
-
-stored?
-
-```text
-3
-```
-
-Suppose
-
-Arbaaz
-
-changes
-
-his name.
-
-Question
-
-How many rows
-
-must be updated?
-
-```text
-3
-```
-
-Miss one row,
-
-and
-
-the database
-
-becomes inconsistent.
-
-Exactly
-
-the Update Anomaly
-
-we studied earlier.
-
----
-
-# Why Did This Happen?
-
-Because
-
-our key
-
-is
-
-```text
-(StudentID, Subject)
+StudentID → HOD
 ```
 
 But
-
-StudentName
-
-depends only
-
-on
-
-StudentID.
-
-Half
-
-the key
-
-is enough.
-
-The other half
-
-is unnecessary.
-
-This creates
-
-redundancy.
-
----
-
-# Definition
-
-A table
-
-is in
-
-Second Normal Form
-
-if
-
-```text
-1.
-
-It is already
-
-in 1NF.
-
-AND
-
-2.
-
-Every non-key attribute
-
-is Fully Functionally Dependent
-
-on the entire
-
-Candidate Key.
-```
-
-Remember
-
-the phrase
-
-```text
-Fully Functionally Dependent.
-```
-
-We studied it
-
-earlier.
-
-Now
-
-you can see
-
-why it matters.
-
----
-
-# How Do We Fix It?
-
-Instead of
-
-one table,
-
-split it.
-
----
-
-Student
-
-| StudentID | StudentName |
-|-----------|-------------|
-|101|Arbaaz|
-|102|Rahul|
-
----
-
-Marks
-
-| StudentID | Subject | Marks |
-|-----------|----------|-------|
-|101|DBMS|90|
-|101|OS|80|
-|101|CN|85|
-|102|DBMS|88|
-
-Notice
-
-what happened.
-
-StudentName
-
-is stored
-
-only once.
-
-No repetition.
-
-No redundancy.
-
----
-
-# Did We Lose Any Data?
-
-No.
-
-We only
-
-organized it
-
-better.
-
-Whenever needed,
-
-both tables
-
-can be joined.
-
-```sql
-SELECT *
-
-FROM Student S
-
-JOIN Marks M
-
-ON S.StudentID=M.StudentID;
-```
-
-The original information
-
-is recovered.
-
----
-
-# Another Example
-
-Employee Project
-
-| EmpID | ProjectID | EmpName | Hours |
-|-------|-----------|----------|-------|
-|1|101|Alice|20|
-|1|102|Alice|15|
-|2|101|Bob|30|
-
-Candidate Key
-
-```text
-(EmpID, ProjectID)
-```
-
-Functional Dependencies
-
-```text
-EmpID
-
-↓
-
-EmpName
-```
-
-```text
-(EmpID, ProjectID)
-
-↓
-
-Hours
-```
-
-Question
-
-Does
-
-EmpName
-
-depend
-
-on
-
-ProjectID?
-
-No.
-
-Therefore,
-
-Partial Dependency.
-
-Not in
-
-2NF.
-
----
-
-Split.
-
-Employee
-
-| EmpID | EmpName |
-|-------|----------|
-|1|Alice|
-|2|Bob|
-
----
-
-ProjectHours
-
-| EmpID | ProjectID | Hours |
-|-------|-----------|-------|
-|1|101|20|
-|1|102|15|
-|2|101|30|
-
-Now
-
-2NF.
-
----
-
-# Very Important Rule
-
-Question
-
-Can
-
-Partial Dependency
-
-exist
-
-if
-
-the Candidate Key
-
-contains
-
-only one attribute?
-
-No.
-
-Impossible.
-
-Example
-
-Candidate Key
-
-```text
-StudentID
-```
-
-Question
-
-Can
-
-StudentName
-
-depend
-
-on
-
-part
-
-of StudentID?
-
-No.
-
-There is
-
-no "part."
-
-Therefore
-
-tables
-
-with a
-
-single-attribute
-
-Candidate Key
-
-are
-
-automatically
-
-in 2NF.
-
-This is
-
-a favourite
-
-interview question.
-
----
-
-# Common Mistakes
-
-❌
-
-Thinking
-
-2NF
-
-removes
-
-all redundancy.
-
-No.
-
-It removes
-
-only
-
-redundancy
-
-caused by
-
-Partial Dependencies.
-
----
-
-❌
-
-Thinking
-
-every repeated value
-
-means
-
-2NF violation.
-
-Wrong.
-
-Only
-
-Partial Dependencies
-
-matter.
-
----
-
-❌
-
-Forgetting
-
-that
-
-1NF
-
-must already
-
-be satisfied.
-
-Every table
-
-must reach
-
-1NF
-
-before
-
-2NF.
-
----
-
-# How To Check 2NF
-
-Step 1
-
-Find
-
-Candidate Keys.
-
-↓
-
-Step 2
-
-Find
-
-Non-Key Attributes.
-
-↓
-
-Step 3
-
-Ask
-
-```text
-Does
-
-every
-
-non-key attribute
-
-depend
-
-on
-
-the whole
-
-Candidate Key?
-```
-
-If yes,
-
-2NF.
-
-If no,
-
-split the table.
-
----
-
-# Interview Questions
-
-## What does
-
-2NF remove?
-
-```text
-Partial Dependency.
-```
-
----
-
-## Can
-
-Partial Dependency
-
-exist
-
-without
-
-Composite Keys?
-
-```text
-No.
-```
-
----
-
-## Is every
-
-1NF table
-
-also
-
-2NF?
-
-```text
-No.
-```
-
----
-
-## Is every
-
-2NF table
-
-also
-
-1NF?
-
-```text
-Yes.
-```
-
-Because
-
-2NF
-
-requires
-
-1NF first.
-
----
-
-# Mental Model
-
-Imagine
-
-a bicycle
-
-that needs
-
-two keys
-
-to unlock.
-
-One key
-
-opens
-
-the bicycle.
-
-The second key
-
-opens
-
-the lock box.
-
-Now suppose
-
-someone writes
-
-your name
-
-on
-
-both keys.
-
-Question
-
-Does your name
-
-depend
-
-on
-
-both keys?
-
-No.
-
-Your name
-
-belongs
-
-only
-
-to you.
-
-Writing it
-
-on both keys
-
-creates
-
-unnecessary duplication.
-
-That's exactly
-
-what
-
-Partial Dependency
-
-does.
-
----
-
-# Bridge
-
-We fixed
-
-Partial Dependency.
-
-Great.
-
-But
-
-look at
-
-this table.
-
-| StudentID | Department | HOD |
-|-----------|------------|-----------|
-|101|CSE|Dr. Rao|
-|102|ECE|Dr. Sharma|
-
-Functional Dependencies
-
-```text
-StudentID
-
-↓
-
-Department
-```
-
-```text
-Department
-
-↓
-
-HOD
-```
-
-Question
-
-Does
-
-HOD
-
-depend
-
-directly
-
-on StudentID?
-
-No.
-
-It depends
-
-on
-
-Department,
-
-which depends
-
-on StudentID.
-
-This is called
-
-a
-
-Transitive Dependency.
-
-Removing
-
-Transitive Dependencies
-
-is exactly
-
-what
-
-Third Normal Form (3NF)
-
-does.
-
-# 5. Third Normal Form (3NF)
-
-In 2NF,
-
-we removed
-
-Partial Dependencies.
-
-Question:
-
-Is our database
-
-now
-
-perfect?
-
-Not yet.
-
-There is still
-
-another type
-
-of redundancy.
-
-It is called
-
-```text
-Transitive Dependency.
-```
-
----
-
-# The Problem
-
-Suppose
-
-we have
-
-this table.
-
-| StudentID | Department | HOD |
-|-----------|------------|------------|
-|101|CSE|Dr. Rao|
-|102|ECE|Dr. Sharma|
-|103|CSE|Dr. Rao|
-
-Question
-
-What is
-
-the Candidate Key?
-
-```text
-StudentID
-```
-
-because
-
-StudentID
-
-uniquely identifies
-
-every student.
-
----
-
-# Functional Dependencies
-
-We know
 
 ```text
 StudentID → Department
@@ -2983,1074 +2034,635 @@ StudentID → Department
 Department → HOD
 ```
 
-Question
+Using Transitivity:
 
-Does
+```text
+StudentID → HOD
+```
 
+We have discovered a hidden FD.
+
+---
+
+# Step 4: Attribute Closure
+
+Compute
+
+```text
+(StudentID)+
+```
+
+Start:
+
+```text
+{StudentID}
+```
+
+Apply FDs:
+
+```text
 StudentID
+↓
 
-directly
+StudentName
 
-determine
-
-HOD?
-
-No.
-
-StudentID
-
-determines
-
-Department.
+↓
 
 Department
 
-determines
+↓
 
-HOD.
+HOD
+```
+
+Result:
+
+```text
+StudentID+
+
+=
+
+{StudentID,
+StudentName,
+Department,
+HOD}
+```
+
+Notice:
+
+Marks is missing because Subject is required.
+
+---
+
+Now compute
+
+```text
+(StudentID, Subject)+
+```
+
+Result:
+
+```text
+{
+StudentID,
+Subject,
+StudentName,
+Department,
+HOD,
+Marks
+}
+```
+
+Now every attribute is present.
 
 Therefore
 
 ```text
-StudentID
-
-↓
-
-Department
-
-↓
-
-HOD
+(StudentID, Subject)
 ```
 
-This is
-
-Transitive Dependency.
+is the Candidate Key.
 
 ---
 
-# Why Is This Bad?
+# Step 5: Check 2NF
 
-Look carefully.
-
-| StudentID | Department | HOD |
-|-----------|------------|------------|
-|101|CSE|Dr. Rao|
-|103|CSE|Dr. Rao|
-
-Question
-
-How many times
-
-is
-
-Dr. Rao
-
-stored?
+Candidate Key
 
 ```text
-Twice
+(StudentID, Subject)
 ```
 
-Suppose
-
-Dr. Rao retires.
-
-New HOD
-
-becomes
-
-Dr. Kumar.
-
-Question
-
-How many rows
-
-must change?
-
-Every student
-
-in
-
-CSE.
-
-Exactly
-
-the Update Anomaly
-
-again.
-
----
-
-# Root Cause
-
-Question
-
-Why is
-
-HOD
-
-repeated?
-
-Because
-
-HOD
-
-doesn't actually
-
-depend on
-
-StudentID.
-
-It depends on
-
-Department.
-
-Department
-
-is acting
-
-as
-
-a middleman.
-
----
-
-# Definition
-
-A table
-
-is in
-
-Third Normal Form
-
-if
+Check every FD.
 
 ```text
-1.
-
-It is already
-
-in 2NF.
-
-AND
-
-2.
-
-No non-key attribute
-
-depends on
-
-another
-
-non-key attribute.
+StudentID → StudentName
 ```
 
-Another way
-
-to remember.
-
-```text
-Non-Key
-
-↓
-
-Non-Key
-
-❌
-```
-
----
-
-# How Do We Fix It?
-
-Split
-
-the table.
-
-Student
-
-| StudentID | Department |
-|-----------|------------|
-|101|CSE|
-|102|ECE|
-|103|CSE|
-
-Department
-
-| Department | HOD |
-|------------|------------|
-|CSE|Dr. Rao|
-|ECE|Dr. Sharma|
-
-Now
-
-the HOD
-
-is stored
-
-only once.
-
-No redundancy.
-
----
-
-# Another Example
-
-Employee
-
-| EmpID | Dept | Manager |
-|-------|------|----------|
-|1|HR|Alice|
-|2|IT|Bob|
-|3|HR|Alice|
-
-Functional Dependencies
-
-```text
-EmpID → Dept
-
-Dept → Manager
-```
-
-Question
-
-Does
-
-Manager
-
-really depend
-
-on
-
-EmpID?
-
-No.
-
-It depends
-
-on
-
-Dept.
-
-Split.
-
-Employee
-
-| EmpID | Dept |
-|-------|------|
-|1|HR|
-|2|IT|
-|3|HR|
-
-Department
-
-| Dept | Manager |
-|------|----------|
-|HR|Alice|
-|IT|Bob|
-
-Now
-
-3NF.
-
----
-
-# How To Detect 3NF
-
-Step 1
-
-Find
-
-Candidate Key.
-
-↓
-
-Step 2
-
-Find
-
-Non-Key Attributes.
-
-↓
-
-Step 3
-
-Ask
-
-```text
-Does one
-
-Non-Key Attribute
-
-determine
-
-another?
-
-```
-
-If yes,
-
-3NF violation.
-
----
-
-# Common Mistakes
-
-❌
-
-Thinking
-
-every dependency
-
-violates 3NF.
-
-Wrong.
-
-Only
-
-Transitive Dependencies
-
-matter.
-
----
-
-❌
-
-Confusing
-
-2NF
-
-and
-
-3NF.
-
-Remember
-
-```text
-2NF
+StudentID is only PART of the Candidate Key.
 
 ↓
 
 Partial Dependency
 
--------------------
+❌ 2NF violated
 
-3NF
+---
+
+```text
+StudentID → Department
+```
+
+Again
 
 ↓
 
-Transitive Dependency
+Partial Dependency
+
+❌ 2NF violated
+
+---
+
+Fix
+
+Split the table.
+
+```text
+Student
+
+StudentID
+StudentName
+Department
+```
+
+```text
+Marks
+
+StudentID
+Subject
+Marks
 ```
 
 ---
 
-# Interview Questions
+# Step 6: Check 3NF
 
-## What does
-
-3NF remove?
+Now look at
 
 ```text
-Transitive Dependency.
+Student
+
+StudentID
+StudentName
+Department
+HOD
 ```
 
----
-
-## Does
-
-3NF
-
-remove
-
-all redundancy?
-
-Almost,
-
-but not always.
-
-BCNF
-
-is even stronger.
-
----
-
-# Mental Model
-
-Suppose
-
-you ask
-
-a student
-
-who the HOD is.
-
-The student
-
-doesn't know
-
-directly.
-
-He first
-
-looks up
-
-his department.
-
-Then
-
-the department
-
-tells him
-
-the HOD.
-
-The information
-
-flows
-
-through
-
-another attribute.
-
-That is
-
-Transitive Dependency.
-
----
-
-# Bridge
-
-Question
-
-Can a table
-
-be in
-
-3NF
-
-and still
-
-contain redundancy?
-
-Surprisingly,
-
-Yes.
-
-That is exactly
-
-why
-
-BCNF exists.
-
-======================================================
-
-# 6. Boyce-Codd Normal Form (BCNF)
-
-BCNF
-
-is often called
-
-a stronger
-
-version
-
-of
-
-3NF.
-
-Most books
-
-say this
-
-without explaining
-
-why.
-
-Let's understand.
-
----
-
-# The Rule
-
-3NF says
+FDs
 
 ```text
-No Transitive Dependency.
-```
+StudentID → Department
 
-BCNF says
-
-something
-
-more powerful.
-
-```text
-Every Determinant
-
-must be
-
-a Candidate Key.
-```
-
-Remember
-
-Determinant?
-
-Left side
-
-of
-
-a Functional Dependency.
-
-Example
-
-```text
-A → B
-```
-
-A
-
-is
-
-the Determinant.
-
-BCNF says
-
-```text
-Every
-
-Determinant
-
-must itself
-
-be
-
-a Candidate Key.
-```
-
----
-
-# Example
-
-Relation
-
-| Teacher | Subject | Room |
-|----------|----------|------|
-|Alice|DBMS|101|
-|Bob|OS|102|
-|Alice|CN|101|
-
-Suppose
-
-Functional Dependencies
-
-are
-
-```text
-(Teacher, Subject)
-
-↓
-
-Room
-```
-
-Also
-
-```text
-Room
-
-↓
-
-Teacher
-```
-
-Question
-
-Candidate Key?
-
-```text
-(Teacher, Subject)
-```
-
-Question
-
-Is
-
-Room
-
-a Candidate Key?
-
-No.
-
-But
-
-Room
-
-determines
-
-Teacher.
-
-```text
-Room
-
-↓
-
-Teacher
+Department → HOD
 ```
 
 Notice
 
-who is
-
-the Determinant.
-
 ```text
-Room
+StudentID
+      ↓
+Department
+      ↓
+HOD
 ```
 
-Is Room
+HOD depends on another Non-Key attribute.
 
-a Candidate Key?
+↓
 
-No.
+Transitive Dependency
 
-Therefore
+❌ 3NF violated
 
-BCNF
+Fix
 
-is violated.
+```text
+Student
+
+StudentID
+StudentName
+Department
+```
+
+```text
+Department
+
+Department
+HOD
+```
 
 ---
 
-# Why Is This Bad?
+# Step 7: BCNF
+
+BCNF needs a different type of example.
 
 Suppose
 
-Room 101
+```text
+Student
+Course
+Teacher
+```
 
-changes
+FDs
 
-its teacher.
+```text
+(Student, Course) → Teacher
 
-Question
+Teacher → Course
+```
 
-How many rows
+Candidate Key
 
-must change?
+```text
+(Student, Course)
+```
 
-Every subject
+Check
 
-using
+```text
+Teacher → Course
+```
 
-Room 101.
+Question:
 
-Again,
+Is Teacher a Candidate Key?
 
-redundancy.
+No.
 
----
+❌ BCNF violated.
 
-# Fix
-
-Split.
-
-Room
-
-| Room | Teacher |
-|------|----------|
-|101|Alice|
-|102|Bob|
-
-Teaching
-
-| Teacher | Subject |
-|----------|----------|
-|Alice|DBMS|
-|Alice|CN|
-|Bob|OS|
-
-BCNF achieved.
+Even though this satisfies 3NF.
 
 ---
 
-# Difference Between
+# Final Flow
+
+```text
+Business Rules
+        ↓
+Functional Dependencies
+        ↓
+Armstrong's Axioms
+        ↓
+Attribute Closure
+        ↓
+Candidate Keys
+        ↓
+Check every FD
+
+Part of Key
+      ↓
+Non-Key
+→ 2NF
+
+Non-Key
+      ↓
+Non-Key
+→ 3NF
+
+Determinant
+NOT Candidate Key
+→ BCNF
+```
+
+# Interview Summary
+
+```text
+Business Rules
+↓
+Describe the real world.
+
+FDs
+↓
+Describe the rules mathematically.
+
+Armstrong
+↓
+Find hidden dependencies.
+
+Closure
+↓
+Find Candidate Keys.
+
+Candidate Keys
+↓
+Check every Functional Dependency.
+
+Partial Dependency
+↓
+2NF
+
+Transitive Dependency
+↓
+3NF
+
+Determinant not a Candidate Key
+↓
+BCNF
+```
+# Formal Rules of Normalization (Interview)
+
+## 2NF (Second Normal Form)
+
+A relation is in **2NF** if:
+
+- It is already in **1NF**.
+- **No non-prime (non-key) attribute depends on a proper subset of any Candidate Key.**
+
+### Rule
+
+```text
+Part of Candidate Key
+          ↓
+Non-Prime Attribute
+
+❌ Not Allowed
+```
+
+---
+
+## 3NF (Third Normal Form)
+
+A relation is in **3NF** if:
+
+- It is already in **2NF**.
+- For **every Functional Dependency** `X → A`, **at least one** of the following is true:
+
+```text
+1. X is a Super Key
+
+OR
+
+2. A is a Prime Attribute
+```
+
+### Rule
+
+```text
+For every FD X → A
+
+Is X a Super Key?
+
+YES → OK
+
+NO
+
+↓
+
+Is A a Prime Attribute?
+
+YES → OK
+
+NO
+
+↓
+
+❌ 3NF Violation
+```
+
+---
+
+## BCNF (Boyce-Codd Normal Form)
+
+A relation is in **BCNF** if:
+
+- For **every Functional Dependency** `X → A`,
+
+```text
+X must be a Super Key.
+```
+
+### Rule
+
+```text
+For every FD X → A
+
+Is X a Super Key?
+
+YES → OK
+
+NO
+
+↓
+
+❌ BCNF Violation
+```
+
+---
+
+# Quick Revision
+
+```text
+2NF
+---------
+Part of Candidate Key
+        ↓
+Non-Prime
+❌
 
 3NF
+---------
+For every FD X → A
+
+X is Super Key
+      OR
+A is Prime
+✅
+
+BCNF
+---------
+For every FD X → A
+
+X must be
+a Super Key
+
+No exceptions.
+```
+
+# Normalization Interview Checklist
+
+## Step 1
+Write all Functional Dependencies.
+
+## Step 2
+Find all Candidate Keys using Attribute Closure.
+
+## Step 3
+Identify
+
+- Prime Attributes
+- Non-Prime Attributes
+
+## Step 4
+Check 2NF
+
+Rule:
+
+No Non-Prime Attribute should depend on part of a Candidate Key.
+
+Violation?
+
+↓
+
+Split the table.
+
+## Step 5
+Check 3NF
+
+For every FD X → A
+
+- X is a Super Key
+OR
+- A is a Prime Attribute
+
+Otherwise
+
+↓
+
+Split the table.
+
+## Step 6
+Check BCNF
+
+For every FD X → A
+
+X must be a Super Key.
+
+Otherwise
+
+↓
+
+Split the table based on that FD.
+
+```text
+YES. ✅
+
+That's the core idea of normalization.
+
+More precisely:
+
+✅ The Functional Dependency causing the violation is moved into a new table.
+✅ The remaining attributes stay in another table.
+✅ The determinant (left side of the FD) is kept in both tables to act as the common key (join attribute).
+
+Question 1
+
+A → B and B → C, where B is a non-key attribute. Do we create another table where B is basically the Candidate Key?
+
+YES. ✅
+
+That's exactly the idea.
+
+Example:
+
+StudentID → Department
+
+Department → HOD
+
+Split into:
+
+Student
+---------
+StudentID (PK)
+Department
+Department
+----------
+Department (PK)
+HOD
+
+Here, Department becomes the Candidate Key (and Primary Key) of the new Department table. ✅
+
+Question 2
+
+If B → C, C is Prime, and it violates BCNF, what do we do?
+
+Exactly the same thing. ✅
+
+BCNF doesn't care whether C is Prime or Non-Prime.
+
+It only checks:
+
+Is B a Super Key?
+
+If No:
+
+❌ BCNF violation.
+
+Split:
+
+Table1
+-------
+B
+C
+
+where B becomes the key of this new table.
+
+The remaining attributes stay in another table containing B as the common attribute.
+
+Rule to remember 🌟
+
+Whenever an FD
+
+X → Y
+
+causes a violation:
+
+Always create
+
+Table1
+-------
+X   ← Key
+Y
 
 and
 
-BCNF
+Table2
+-------
+Remaining attributes
++
+X   ← Common attribute for joining
 
-This is
+So the decomposition process is the same for 2NF, 3NF, and BCNF. The only difference is which FD is considered a violation.
 
-the favourite
-
-interview question.
-
-| 3NF | BCNF |
-|------|------|
-| Removes Transitive Dependency | Every Determinant must be Candidate Key |
-| Slightly weaker | Stronger |
-| May still allow some redundancy | Removes more redundancy |
-| Easier to satisfy | Harder to satisfy |
-
----
-
-# Easy Way To Remember
-
-Imagine
-
-a school.
-
-Only
-
-the Principal
-
-can make
-
-school-wide decisions.
-
-Candidate Key
-
-=
-
-Principal.
-
-Now suppose
-
-a random teacher
-
-starts making
-
-school-wide decisions.
-
-Problem.
-
-BCNF says
-
-```text
-Only
-
-Candidate Keys
-
-may determine
-
-other attributes.
 ```
-
-No exceptions.
-
----
-
-# 2NF vs 3NF vs BCNF
-
-2NF
-
-asks
-
-```text
-Does
-
-every Non-Key Attribute
-
-depend
-
-on
-
-the entire
-
-Candidate Key?
-```
-
-If no,
-
-2NF violation.
-
----
-
-3NF
-
-asks
-
-```text
-Does
-
-a Non-Key Attribute
-
-depend
-
-on
-
-another
-
-Non-Key Attribute?
-```
-
-If yes,
-
-3NF violation.
-
----
-
-BCNF
-
-asks
-
-```text
-Is
-
-every Determinant
-
-a Candidate Key?
-```
-
-If no,
-
-BCNF violation.
-
----
-
-# Complete Flow
-
-```text
-1NF
-
-↓
-
-Atomic Values
-
------------------------
-
-2NF
-
-↓
-
-Remove Partial Dependency
-
------------------------
-
-3NF
-
-↓
-
-Remove Transitive Dependency
-
------------------------
-
-BCNF
-
-↓
-
-Every Determinant
-
-Must Be
-
-Candidate Key
-```
-
----
-
-# Interview Questions
-
-## Which is stronger?
-
-```text
-BCNF
-```
-
----
-
-## Is every BCNF table
-
-also
-
-3NF?
-
-```text
-Yes.
-```
-
----
-
-## Is every 3NF table
-
-BCNF?
-
-```text
-No.
-```
-
----
-
-## What is
-
-the BCNF rule?
-
-```text
-Every Determinant
-
-must be
-
-a Candidate Key.
-```
-
----
-
-# Final Mental Model
-
-Imagine
-
-building
-
-a house.
-
-```text
-1NF
-
-↓
-
-Organize the bricks.
-
-----------------
-
-2NF
-
-↓
-
-Remove
-
-unnecessary duplicates
-
-caused by
-
-partial ownership.
-
-----------------
-
-3NF
-
-↓
-
-Remove
-
-indirect dependencies.
-
-----------------
-
-BCNF
-
-↓
-
-Ensure
-
-only the true owners
-
-(Candidate Keys)
-
-control information.
-```
+# 14. Fourth Normal Form (4NF)
 
 After BCNF,
 
-your database
-
-is highly organized,
-
-contains
-
-minimal redundancy,
-
-and is much easier
-
-to maintain.
-
----
-
-# Bridge
-
-The remaining
-
-Normal Forms
-
-are
-
-4NF
-
-and
-
-5NF.
-
-They solve
-
-very specialized
-
-problems
-
-(Multi-Valued Dependencies
-
-and
-
-Join Dependencies).
-
-For
-
-SWE/SDE interviews,
-
-an overview
-
-is usually sufficient.
-
-======================================================
-
-# 7. Fourth Normal Form (4NF) - Overview
-
-By the time
-
-a table reaches
-
-BCNF,
-
 most redundancy
 
-has already
-
-been removed.
+has already been removed.
 
 However,
 
-there is still
+one special kind of redundancy
 
-one special problem.
+can still exist.
 
 It is called
 
 ```text
-Multi-Valued Dependency (MVD)
+Multi-Valued Dependency (MVD).
 ```
+
+Unlike Functional Dependency,
+
+where one attribute determines another,
+
+a Multi-Valued Dependency means
+
+one attribute independently determines
+
+multiple values of another attribute.
 
 ---
 
-## What Is A Multi-Valued Dependency?
+## Example
 
 Suppose
 
 a professor
 
-can teach
-
-multiple subjects
+can teach multiple subjects
 
 and
 
-also knows
-
-multiple programming languages.
-
-Example
+also knows multiple programming languages.
 
 | Professor | Subject | Language |
-|------------|----------|-----------|
+|------------|----------|----------|
 |Alice|DBMS|Java|
 |Alice|DBMS|Python|
 |Alice|OS|Java|
@@ -4064,45 +2676,19 @@ and
 
 Languages
 
-are independent.
+are completely independent.
 
-Alice teaches
+The database stores
 
-DBMS
+every possible combination,
 
-and
-
-OS.
-
-Alice knows
-
-Java
-
-and
-
-Python.
-
-But
-
-the database
-
-stores
-
-every combination.
-
-This creates
-
-unnecessary redundancy.
+creating unnecessary redundancy.
 
 ---
 
 ## Solution
 
-Split
-
-into
-
-two tables.
+Split into
 
 ProfessorSubject
 
@@ -4114,67 +2700,87 @@ ProfessorSubject
 ProfessorLanguage
 
 | Professor | Language |
-|------------|-----------|
+|------------|----------|
 |Alice|Java|
 |Alice|Python|
 
-The unnecessary
+Now,
 
-combinations disappear.
+the unnecessary combinations disappear.
 
 ---
 
 ## Definition
 
-A relation
+A relation is in
 
-is in
-
-Fourth Normal Form
+Fourth Normal Form (4NF)
 
 if
 
-it has
+it is already in BCNF
 
-no
+and
 
-non-trivial
+contains
+
+no non-trivial
 
 Multi-Valued Dependencies.
 
 ---
 
-## Interview Point
+## Interview Questions
 
-For most
+### What does 4NF remove?
 
-SWE interviews,
+```text
+Multi-Valued Dependencies.
+```
 
-knowing
+---
 
-that
+### Is every BCNF table also in 4NF?
 
-4NF removes
+```text
+No.
 
-Multi-Valued Dependencies
+A BCNF table
+can still contain
+Multi-Valued Dependencies.
+```
+
+---
+
+### Is every 4NF table also BCNF?
+
+```text
+Yes.
+```
+
+---
+
+### Do freshers solve 4NF problems?
+
+Usually no.
+
+Knowing
+
+the definition,
+
+purpose,
+
+and one example
 
 is enough.
 
-Very few companies
+---
 
-ask
-
-4NF problems.
-
-======================================================
-
-# 8. Fifth Normal Form (5NF) - Overview
+# 15. Fifth Normal Form (5NF)
 
 5NF
 
-is even more advanced.
-
-It deals with
+deals with
 
 Join Dependencies.
 
@@ -4186,61 +2792,75 @@ Sometimes
 
 a table
 
-is split
-
-into
+is decomposed into
 
 multiple tables.
 
-Question
+Question:
 
 Can we always
 
 join them back
 
-without creating
+to recover
 
-extra rows?
+exactly
 
-If not,
+the original table?
 
-5NF
+Not always.
 
-may be violated.
+5NF ensures
+
+that the decomposition
+
+is lossless
+
+and
+
+does not create
+
+extra rows.
 
 ---
 
-Example
+## Conceptual Example
 
+Imagine
+
+three entities
+
+```text
 Supplier
 
 Part
 
 Project
+```
 
-relationships
+These relationships
 
-are classic
+may be split
 
-5NF examples.
+into multiple tables.
 
-These are
+If joining them
 
-rarely used
+creates
 
-outside
+incorrect combinations,
 
-advanced database design.
+the design
+
+violates 5NF.
 
 ---
 
 ## Definition
 
-A relation
+A relation is in
 
-is in
-
-Fifth Normal Form
+Fifth Normal Form (5NF)
 
 if
 
@@ -4250,476 +2870,55 @@ is implied
 
 by
 
-Candidate Keys.
+its Candidate Keys.
 
 ---
 
-## Interview Point
+## Why Is 5NF Rare?
 
-For freshers,
+Most production databases
 
-remember only
-
-```text
-5NF
-
-↓
-
-Join Dependency
-```
-
-Nothing more
-
-is usually expected.
-
-======================================================
-
-# 9. Denormalization
-
-So far,
-
-every Normal Form
-
-has tried
-
-to
-
-split tables.
-
-Question
-
-Why would
-
-anyone
-
-combine them
-
-again?
-
-Answer:
-
-Performance.
-
----
-
-## Example
-
-Normalized Database
-
-Student
-
-| StudentID | Department |
-|-----------|------------|
-
-Department
-
-| Department | HOD |
-|------------|------|
-
-To display
-
-student
-
-and
-
-HOD,
-
-the DBMS
-
-must perform
-
-a JOIN.
-
----
-
-Suppose
-
-millions
-
-of records
-
-are queried
-
-every second.
-
-Repeated JOINs
-
-can become expensive.
-
-One solution
-
-is
-
-Denormalization.
-
-Store
-
-the HOD
-
-directly
-
-inside
-
-the Student table.
-
-This introduces
-
-redundancy,
-
-but
-
-reduces JOIN operations.
-
----
-
-## Advantages
-
-- Faster Reads
-- Fewer JOINs
-- Better Reporting Performance
-
----
-
-## Disadvantages
-
-- More Redundancy
-- More Storage
-- More Update Anomalies
-- Harder Maintenance
-
----
-
-## When Is Denormalization Used?
-
-Large-scale systems
-
-that
-
-read
-
-far more often
-
-than they write.
-
-Examples
-
-- Analytics
-- Dashboards
-- Data Warehouses
-- Reporting Systems
-
-Most OLTP systems
-
-prefer
-
-Normalization.
-
-======================================================
-
-# Complete Revision
-
-## Normal Forms
-
-```text
-1NF
-
-↓
-
-Atomic Values
-
-------------------
-
-2NF
-
-↓
-
-Remove Partial Dependency
-
-------------------
-
-3NF
-
-↓
-
-Remove Transitive Dependency
-
-------------------
+never require it.
 
 BCNF
 
-↓
-
-Every Determinant
-
-must be
-
-a Candidate Key
-
-------------------
+or
 
 4NF
 
-↓
+is sufficient
 
-Remove
+for the vast majority
 
-Multi-Valued Dependency
+of applications.
 
-------------------
+5NF mainly appears in
 
-5NF
+advanced database design.
 
-↓
+---
 
-Remove
+## Interview Questions
 
-Join Dependency
-```
-
-======================================================
-
-# Dependency Revision
+### What does 5NF remove?
 
 ```text
-Functional Dependency
-
-↓
-
-Full Dependency
-
-↓
-
-Partial Dependency
-
-↓
-
-Transitive Dependency
-
-↓
-
-Normalization
+Join Dependency.
 ```
 
-======================================================
+---
 
-# Key Revision
+### Is 5NF commonly asked?
 
 ```text
-Super Key
+Rarely.
 
-↓
+Freshers are expected
+to know only
 
-Candidate Key
+its purpose,
 
-↓
+definition,
 
-Primary Key
-
-↓
-
-Alternate Key
+and basic idea.
 ```
-
-======================================================
-
-# Entire Chapter Mental Model
-
-Think of
-
-Normalization
-
-as
-
-cleaning
-
-a messy room.
-
-Initially
-
-everything
-
-is thrown
-
-into
-
-one giant box.
-
-```text
-Student
-
-Department
-
-HOD
-
-Subjects
-
-Marks
-
-Phone Numbers
-
-Everything
-
-mixed together.
-```
-
-Step by step,
-
-we organize it.
-
-```text
-1NF
-
-↓
-
-One value
-
-per box.
-
--------------------
-
-2NF
-
-↓
-
-Move information
-
-that depends
-
-on
-
-only part
-
-of the key.
-
--------------------
-
-3NF
-
-↓
-
-Move information
-
-that depends
-
-on
-
-another
-
-non-key attribute.
-
--------------------
-
-BCNF
-
-↓
-
-Ensure
-
-only Candidate Keys
-
-control
-
-other information.
-
--------------------
-
-4NF
-
-↓
-
-Separate
-
-independent
-
-multi-valued facts.
-
--------------------
-
-5NF
-
-↓
-
-Ensure
-
-tables can be
-
-joined back
-
-without
-
-introducing
-
-incorrect data.
-```
-
-Eventually,
-
-every piece
-
-of information
-
-has
-
-exactly
-
-one proper place.
-
-The database becomes
-
-- Easy to maintain
-- Consistent
-- Less redundant
-- Easier to query
-- Easier to update
-
-======================================================
-
-# Interview Cheat Sheet
-
-| Topic | One-Line Answer |
-|--------|-----------------|
-| Functional Dependency | One attribute determines another. |
-| Attribute Closure | All attributes determined by an attribute set. |
-| Candidate Key | Minimal attribute set identifying every row. |
-| Super Key | Attribute set identifying every row. |
-| 1NF | Atomic values. |
-| 2NF | Remove Partial Dependency. |
-| 3NF | Remove Transitive Dependency. |
-| BCNF | Every Determinant must be a Candidate Key. |
-| 4NF | Remove Multi-Valued Dependencies. |
-| 5NF | Remove Join Dependencies. |
-| Denormalization | Intentionally introduce redundancy to improve read performance. |
-
-======================================================
-
-# End Of DBMS05
-
-Congratulations.
-
-You have completed
-
-the most theory-intensive
-
-chapter
-
-of DBMS.
-
-The remaining chapters
-
-(Transactions,
-
-Concurrency,
-
-Recovery,
-
-Indexing)
-
-build naturally
-
-on concepts
-
-you've already learned
-
-and are generally
-
-easier to grasp.
