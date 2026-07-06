@@ -5433,49 +5433,53 @@ to the closure.
 ---
 
 # Mental Model
-# From Functional Dependencies to Normalization (Interview Flow)
+# Functional Dependencies → Normalization (Interview Flow)
 
 ## Problem
 
-Given a table:
+A college stores marks in one table.
 
-| StudentID | Department | HOD |
-|-----------|------------|-----|
-|101|CSE|Dr. Rao|
-|102|ECE|Dr. Sharma|
+| StudentID | Subject | StudentName | Department | HOD | Marks |
+|-----------|---------|-------------|------------|-----|-------|
+|101|DBMS|Arbaaz|CSE|Dr. Rao|95|
+|101|OS|Arbaaz|CSE|Dr. Rao|90|
+|102|DBMS|Rahul|ECE|Dr. Sharma|80|
 
-Question:
-
-- How do we know the Candidate Key?
-- How do we know whether to normalize?
+We want to remove redundancy.
 
 ---
 
 # Step 1: Business Rules
 
-These are real-world facts.
+The college tells us:
 
 ```text
-A Student belongs to one Department.
-A Department has one HOD.
+One StudentID belongs to one student.
+
+One student belongs to one department.
+
+One department has one HOD.
+
+Marks are stored per Student and Subject.
 ```
 
-Need:
-- Database doesn't understand English.
+These are real-world facts.
 
 ---
 
-# Step 2: Functional Dependencies (FDs)
-
-Convert business rules into mathematical form.
+# Step 2: Convert into Functional Dependencies
 
 ```text
+StudentID → StudentName
+
 StudentID → Department
+
 Department → HOD
+
+(StudentID, Subject) → Marks
 ```
 
-Need:
-- To formally describe how attributes depend on each other.
+Now the database understands the business.
 
 ---
 
@@ -5485,41 +5489,51 @@ Question:
 
 Can StudentID determine HOD?
 
-Nobody wrote:
+Nobody explicitly wrote:
 
 ```text
 StudentID → HOD
+```
+
+But
+
+```text
+StudentID → Department
+
+Department → HOD
 ```
 
 Using Transitivity:
 
 ```text
-StudentID → Department
-Department → HOD
--------------------
 StudentID → HOD
 ```
 
-Need:
-- To discover every logically true FD.
+We have discovered a hidden FD.
 
 ---
 
 # Step 4: Attribute Closure
 
-Now ask:
+Compute
 
 ```text
-What can StudentID determine?
+(StudentID)+
 ```
 
-Compute:
+Start:
 
 ```text
-StudentID+
-
-Start:
 {StudentID}
+```
+
+Apply FDs:
+
+```text
+StudentID
+↓
+
+StudentName
 
 ↓
 
@@ -5528,86 +5542,132 @@ Department
 ↓
 
 HOD
-
-↓
-
-{StudentID, Department, HOD}
 ```
 
-Need:
-- To know everything an attribute can determine.
-
----
-
-# Step 5: Candidate Key
-
-Rule:
-
-```text
-If X+ contains all attributes,
-
-then X is a Candidate Key.
-```
-
-Here:
+Result:
 
 ```text
 StudentID+
+
 =
-{StudentID, Department, HOD}
+
+{StudentID,
+StudentName,
+Department,
+HOD}
 ```
 
-So,
+Notice:
 
-```text
-StudentID
-```
-
-is the Candidate Key.
-
-Need:
-- Normalization always depends on Candidate Keys.
+Marks is missing because Subject is required.
 
 ---
 
-# Step 6: Check 2NF
-
-Example:
-
-| StudentID | Subject | StudentName | Marks |
-
-FDs:
+Now compute
 
 ```text
-(StudentID, Subject) → Marks
-
-StudentID → StudentName
+(StudentID, Subject)+
 ```
 
-Candidate Key:
+Result:
+
+```text
+{
+StudentID,
+Subject,
+StudentName,
+Department,
+HOD,
+Marks
+}
+```
+
+Now every attribute is present.
+
+Therefore
 
 ```text
 (StudentID, Subject)
 ```
 
-StudentName depends on only part of the key.
+is the Candidate Key.
+
+---
+
+# Step 5: Check 2NF
+
+Candidate Key
+
+```text
+(StudentID, Subject)
+```
+
+Check every FD.
+
+```text
+StudentID → StudentName
+```
+
+StudentID is only PART of the Candidate Key.
 
 ↓
 
 Partial Dependency
 
-↓
-
-2NF Violation
-
-Need:
-- Remove Partial Dependency.
+❌ 2NF violated
 
 ---
 
-# Step 7: Check 3NF
+```text
+StudentID → Department
+```
 
-FDs:
+Again
+
+↓
+
+Partial Dependency
+
+❌ 2NF violated
+
+---
+
+Fix
+
+Split the table.
+
+```text
+Student
+
+StudentID
+StudentName
+Department
+```
+
+```text
+Marks
+
+StudentID
+Subject
+Marks
+```
+
+---
+
+# Step 6: Check 3NF
+
+Now look at
+
+```text
+Student
+
+StudentID
+StudentName
+Department
+HOD
+```
+
+FDs
 
 ```text
 StudentID → Department
@@ -5615,50 +5675,88 @@ StudentID → Department
 Department → HOD
 ```
 
-HOD depends on Department,
-not directly on StudentID.
+Notice
+
+```text
+StudentID
+      ↓
+Department
+      ↓
+HOD
+```
+
+HOD depends on another Non-Key attribute.
 
 ↓
 
 Transitive Dependency
 
-↓
+❌ 3NF violated
 
-3NF Violation
+Fix
 
-Need:
-- Remove Transitive Dependency.
+```text
+Student
+
+StudentID
+StudentName
+Department
+```
+
+```text
+Department
+
+Department
+HOD
+```
 
 ---
 
-# Step 8: Check BCNF
+# Step 7: BCNF
 
-Rule:
+BCNF needs a different type of example.
 
-```text
-Every Determinant
-must be
-a Candidate Key.
-```
-
-If
+Suppose
 
 ```text
-Room → Teacher
+Student
+Course
+Teacher
 ```
 
-and Room is NOT a Candidate Key,
+FDs
 
-↓
+```text
+(Student, Course) → Teacher
 
-BCNF Violation
+Teacher → Course
+```
 
-Need:
-- Remove remaining redundancy.
+Candidate Key
+
+```text
+(Student, Course)
+```
+
+Check
+
+```text
+Teacher → Course
+```
+
+Question:
+
+Is Teacher a Candidate Key?
+
+No.
+
+❌ BCNF violated.
+
+Even though this satisfies 3NF.
 
 ---
 
-# Entire Flow
+# Final Flow
 
 ```text
 Business Rules
@@ -5666,111 +5764,325 @@ Business Rules
 Functional Dependencies
         ↓
 Armstrong's Axioms
-(Derive hidden FDs)
         ↓
 Attribute Closure
-(What can X determine?)
         ↓
 Candidate Keys
-(Who identifies every row?)
         ↓
-2NF
-(Removes Partial Dependency)
-        ↓
-3NF
-(Removes Transitive Dependency)
-        ↓
-BCNF
-(Every Determinant must be a Candidate Key)
+Check every FD
+
+Part of Key
+      ↓
+Non-Key
+→ 2NF
+
+Non-Key
+      ↓
+Non-Key
+→ 3NF
+
+Determinant
+NOT Candidate Key
+→ BCNF
 ```
 
-# One-Line Revision
+# Interview Summary
 
 ```text
 Business Rules
 ↓
-Real-world facts
+Describe the real world.
 
 FDs
 ↓
-Write the facts mathematically
+Describe the rules mathematically.
 
 Armstrong
 ↓
-Find hidden FDs
+Find hidden dependencies.
 
 Closure
 ↓
-Find everything an attribute determines
+Find Candidate Keys.
 
-Candidate Key
+Candidate Keys
 ↓
-Find who uniquely identifies a row
+Check every Functional Dependency.
 
+Partial Dependency
+↓
 2NF
-↓
-Remove Partial Dependency
 
+Transitive Dependency
+↓
 3NF
-↓
-Remove Transitive Dependency
 
+Determinant not a Candidate Key
+↓
 BCNF
-↓
-Every determinant must be a Candidate Key
 ```
----
+# Formal Rules of Normalization (Interview)
 
-# Bridge
+## 2NF (Second Normal Form)
 
-Now comes
+A relation is in **2NF** if:
 
-the biggest application
+- It is already in **1NF**.
+- **No non-prime (non-key) attribute depends on a proper subset of any Candidate Key.**
 
-of Attribute Closure.
-
-Question:
-
-Suppose
-
-the table contains
-
-attributes
-
-A, B, C, D, E.
-
-If
-
-A⁺
-
-contains
-
-every attribute,
-
-what does that mean?
-
-It means
-
-A alone
-
-can identify
-
-every row
-
-in the table.
-
-Such attributes
-
-are called
+### Rule
 
 ```text
-Candidate Keys.
+Part of Candidate Key
+          ↓
+Non-Prime Attribute
+
+❌ Not Allowed
 ```
 
-Everything we've learned
+---
 
-so far
+## 3NF (Third Normal Form)
 
-was preparation
+A relation is in **3NF** if:
 
-for finding them.
+- It is already in **2NF**.
+- For **every Functional Dependency** `X → A`, **at least one** of the following is true:
+
+```text
+1. X is a Super Key
+
+OR
+
+2. A is a Prime Attribute
+```
+
+### Rule
+
+```text
+For every FD X → A
+
+Is X a Super Key?
+
+YES → OK
+
+NO
+
+↓
+
+Is A a Prime Attribute?
+
+YES → OK
+
+NO
+
+↓
+
+❌ 3NF Violation
+```
+
+---
+
+## BCNF (Boyce-Codd Normal Form)
+
+A relation is in **BCNF** if:
+
+- For **every Functional Dependency** `X → A`,
+
+```text
+X must be a Super Key.
+```
+
+### Rule
+
+```text
+For every FD X → A
+
+Is X a Super Key?
+
+YES → OK
+
+NO
+
+↓
+
+❌ BCNF Violation
+```
+
+---
+
+# Quick Revision
+
+```text
+2NF
+---------
+Part of Candidate Key
+        ↓
+Non-Prime
+❌
+
+3NF
+---------
+For every FD X → A
+
+X is Super Key
+      OR
+A is Prime
+✅
+
+BCNF
+---------
+For every FD X → A
+
+X must be
+a Super Key
+
+No exceptions.
+```
+
+# Normalization Interview Checklist
+
+## Step 1
+Write all Functional Dependencies.
+
+## Step 2
+Find all Candidate Keys using Attribute Closure.
+
+## Step 3
+Identify
+
+- Prime Attributes
+- Non-Prime Attributes
+
+## Step 4
+Check 2NF
+
+Rule:
+
+No Non-Prime Attribute should depend on part of a Candidate Key.
+
+Violation?
+
+↓
+
+Split the table.
+
+## Step 5
+Check 3NF
+
+For every FD X → A
+
+- X is a Super Key
+OR
+- A is a Prime Attribute
+
+Otherwise
+
+↓
+
+Split the table.
+
+## Step 6
+Check BCNF
+
+For every FD X → A
+
+X must be a Super Key.
+
+Otherwise
+
+↓
+
+Split the table based on that FD.
+
+```text
+YES. ✅
+
+That's the core idea of normalization.
+
+More precisely:
+
+✅ The Functional Dependency causing the violation is moved into a new table.
+✅ The remaining attributes stay in another table.
+✅ The determinant (left side of the FD) is kept in both tables to act as the common key (join attribute).
+
+Question 1
+
+A → B and B → C, where B is a non-key attribute. Do we create another table where B is basically the Candidate Key?
+
+YES. ✅
+
+That's exactly the idea.
+
+Example:
+
+StudentID → Department
+
+Department → HOD
+
+Split into:
+
+Student
+---------
+StudentID (PK)
+Department
+Department
+----------
+Department (PK)
+HOD
+
+Here, Department becomes the Candidate Key (and Primary Key) of the new Department table. ✅
+
+Question 2
+
+If B → C, C is Prime, and it violates BCNF, what do we do?
+
+Exactly the same thing. ✅
+
+BCNF doesn't care whether C is Prime or Non-Prime.
+
+It only checks:
+
+Is B a Super Key?
+
+If No:
+
+❌ BCNF violation.
+
+Split:
+
+Table1
+-------
+B
+C
+
+where B becomes the key of this new table.
+
+The remaining attributes stay in another table containing B as the common attribute.
+
+Rule to remember 🌟
+
+Whenever an FD
+
+X → Y
+
+causes a violation:
+
+Always create
+
+Table1
+-------
+X   ← Key
+Y
+
+and
+
+Table2
+-------
+Remaining attributes
++
+X   ← Common attribute for joining
+
+So the decomposition process is the same for 2NF, 3NF, and BCNF. The only difference is which FD is considered a violation.
+
+```
