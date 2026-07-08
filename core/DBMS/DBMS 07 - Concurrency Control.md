@@ -1546,7 +1546,9 @@ so A, B logically inside a transaction is 1 operation problem occurs when A is d
 so 2pl says these logically 1 group of queries should have 2 phases aquiring of locks and relesing of locks insted of each query having a lock and unlock !
 
 better way :
-A transaction is one logical unit of work. Even if it contains many SQL queries, it should first acquire all the locks it needs (Growing Phase). Only after it has finished acquiring locks should it start releasing them (Shrinking Phase). It should not lock–unlock after every query, because that allows other transactions to observe or interfere with a partially completed transaction.
+A transaction is one logical unit of work. Even if it contains many SQL queries, it should first acquire all the locks it needs (Growing Phase).
+Only after it has finished acquiring locks should it start releasing them (Shrinking Phase). It should not lock–unlock after every query,
+because that allows other transactions to observe or interfere with a partially completed transaction.
 
 Q : so is it like , all logically 1 operation i.e set of queries as 2pl later some other set of queries 2pl inside a transaction or entrie transaction as 2pl ?
 A : 2PL is applied to the entire transaction, not to arbitrary groups of queries inside a transaction.
@@ -1567,7 +1569,9 @@ Shrinking Phase:
 
 
 
-with concurrency independent transactions can without any problem do what ever, like different rows, when it comes to same row the lock aquiring matters, that too in 2pl fashion so that entire transaction is logically 1 unit , in A, B example, after we perform A we can release A and others can use A but not B ! i got this ! 
+with concurrency independent transactions can without any problem do what ever, like different rows, when it comes to same row the lock aquiring matters,
+that too in 2pl fashion so that entire transaction is logically 1 unit , in A, B example, after we perform A we can release A and others can use A but not B !
+i got this ! 
 
 ```
 
@@ -1610,7 +1614,8 @@ Unlock(B)
 ```
 
 - ✅ **Basic 2PL:** Valid, because after the first unlock, no new locks are acquired.
-- ❌ **Strict 2PL (used by most DBMSs):** Not allowed, because `A` is unlocked before `COMMIT`. Another transaction could read or modify `A` while T1 hasn't finished (or before rollback if T1 crashes), causing dirty reads or inconsistent results.
+- ❌ **Strict 2PL (used by most DBMSs):** Not allowed, because `A` is unlocked before `COMMIT`. Another transaction could read or modify `A`
+while T1 hasn't finished (or before rollback if T1 crashes), causing dirty reads or inconsistent results.
 
 **Rule to remember:**
 - **Basic 2PL:** No new locks after the first unlock.
