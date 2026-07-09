@@ -2084,6 +2084,100 @@ the Shrinking Phase.
 
 ---
 
+
+````md
+# 2PL, Strict 2PL & WAL (Quick Revision)
+
+## Why is unlocking early bad?
+If a transaction unlocks a resource before it finishes, another transaction can access **half-completed data**, leading to problems like **dirty reads**.
+
+---
+
+## Why can't we acquire a new lock after unlocking one?
+There is **no simple practical reason** like dirty reads.
+
+The rule exists so that the execution remains **conflict serializable**.
+
+> **Conflict Serializability:** Even though transactions execute concurrently, the final result should be the same as if they had executed **one after another** (serially).
+
+---
+
+## Basic 2PL
+- **Growing Phase:** Only acquire locks.
+- **Shrinking Phase:** Only release locks.
+- **Rule:** Once the first lock is released, **no new locks can be acquired.**
+
+---
+
+## Strict 2PL
+- Follows Basic 2PL.
+- Additionally, **all write locks are held until COMMIT**.
+- Prevents:
+  - Dirty Reads
+  - Cascading Rollbacks
+- Simplifies crash recovery.
+
+---
+
+## Example: Transfer ₹50 from A → B
+
+```text
+BEGIN
+
+Lock(A)
+A = A - 50
+
+Lock(B)   // Wait if B is locked
+
+B = B + 50
+
+COMMIT
+
+Unlock(A)
+Unlock(B)
+```
+
+The updates happen immediately after acquiring each lock, but **locks are released only after COMMIT**.
+
+---
+
+# Crash Recovery
+
+### Crash before COMMIT
+- Transaction is **UNDO**ne.
+- Database returns to the old state.
+
+### Crash after COMMIT
+- Transaction is permanent.
+- If database pages weren't written yet, DBMS **REDO**s the committed changes using the log.
+
+---
+
+# Why use Logs instead of directly updating the database?
+
+Logs are **append-only (sequential)**, while database pages are **scattered**.
+
+```text
+Log:
+Append → Append → Append ✅ (Fast)
+
+Database:
+Update Page 5
+Update Page 827
+Update Page 42 ❌ (Slower)
+```
+
+Because sequential appends are much faster, DBMS:
+1. Writes the log to disk first (WAL).
+2. Updates the actual database pages later in batches.
+
+**Memory Trick:**  
+**Sequential append = Fast** 🚀  
+**Random page updates = Slower** 🗄️
+````
+
+
+
 # Why Does 2PL Work?
 
 The goal of 2PL is
