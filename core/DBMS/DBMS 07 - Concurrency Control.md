@@ -2762,6 +2762,23 @@ depending on the protocol.
 
 ---
 
+
+```text
+i can tell this in interview, 'so when users 2 users have 2 requests to db, say u1 and u2 , u1 makes T1 and u2 makes T2 ,
+ T1 gets early TS and T2 next , due to cpu scheduling say T2 exec is done , i.e u2 makes changes in some row, then T1 comes it aborts ,
+the u1 gets the msg of failed and can see the changes made by u2 , now he submits again and gets his work done,
+
+
+
+The original timestamp order is not necessarily preserved because aborted transactions become new transactions with new timestamps.
+If a transaction is aborted, the application either retries automatically
+or notifies the user that their changes were not applied and asks them to retry.
+```
+
+
+
+
+
 # Read Timestamp (RTS)
 
 Every data item
@@ -3169,6 +3186,137 @@ can reduce performance.
 
 ---
 
+# OS Synchronization vs DBMS Concurrency
+
+## Operating Systems (OS)
+
+In OS, **the programmer writes the code**, so they usually know:
+
+* Which thread needs which lock.
+* The order in which locks should be acquired.
+
+Example:
+
+```text
+Thread 1 → Mutex A
+Thread 2 → Mutex B
+```
+
+The programmer can use:
+
+* Mutexes
+* Semaphores
+* Condition Variables
+* Lock Ordering (e.g., always lock A before B)
+
+If synchronization is designed properly, **deadlocks can often be prevented**.
+
+---
+
+## Database Management System (DBMS)
+
+In DBMS, **the DBMS does NOT write the transactions**.
+
+Transactions come from many different users and applications.
+
+Example:
+
+```sql
+UPDATE Accounts SET balance = balance - 100 WHERE id = 1;
+
+UPDATE Accounts SET balance = balance + 100 WHERE id = 2;
+```
+
+Thousands of such transactions may arrive simultaneously.
+
+The DBMS **doesn't know in advance**:
+
+* Which transaction will arrive next.
+* Which rows it will access.
+* In what order it will access them.
+* How long it will hold locks.
+
+So, the DBMS must make concurrency decisions **dynamically at runtime**.
+
+---
+
+## Deadlock Example
+
+```
+T1:
+Lock A
+Lock B
+
+T2:
+Lock B
+Lock A
+```
+
+Execution:
+
+```
+T1 gets A
+
+T2 gets B
+
+T1 waits for B
+
+T2 waits for A
+```
+
+Result:
+
+**Deadlock** (both wait forever).
+
+---
+
+# Why Timestamp Ordering Helps
+
+Instead of making transactions wait, the DBMS compares timestamps.
+
+```
+Conflict
+    ↓
+Abort one transaction
+    ↓
+Restart later
+```
+
+* No waiting
+* No deadlock
+
+---
+
+## Key Difference
+
+### OS
+
+* Programmer controls synchronization.
+* Lock order can be designed.
+* Deadlocks can often be avoided by careful programming.
+
+### DBMS
+
+* Transactions come from many independent users.
+* Future lock requirements are unknown.
+* The DBMS must coordinate everything at runtime.
+
+---
+
+## Memory Trick 🧠
+
+**OS**
+
+> Programmer controls the threads.
+
+**DBMS**
+
+> DBMS controls unpredictable transactions.
+
+That's why DBMS needs concurrency control protocols like **Locking** and **Timestamp Ordering**.
+
+
+
 # Interview Questions
 
 ### What is Timestamp Ordering?
@@ -3391,6 +3539,9 @@ used incorrect data.
 
 ---
 
+
+
+
 # Recoverable Schedule
 
 Rule
@@ -3476,6 +3627,74 @@ Impossible
 to recover.
 
 ---
+
+
+## Recoverable Schedule
+
+## Rule
+
+If **T2 reads data written by T1**, then:
+
+* ✅ **T2 can read before T1 commits.**
+* ❌ **T2 cannot commit before T1 commits.**
+
+---
+
+## Why?
+
+If T1 aborts, the data read by T2 becomes invalid.
+
+So T2 must also abort.
+
+---
+
+## Safe (Recoverable)
+
+```text
+T1: Write A = 200
+T2: Read A = 200
+T1: Commit ✅
+T2: Commit ✅
+```
+
+---
+
+## If T1 Fails
+
+```text
+T1: Write A = 200
+T2: Read A = 200
+T1: Abort ❌
+T2: Abort ❌
+```
+
+This is called **Cascading Rollback**.
+
+---
+
+## Bad (Not Recoverable)
+
+```text
+T1: Write A = 200
+T2: Read A = 200
+T2: Commit ✅
+T1: Abort ❌
+```
+
+❌ T2 has already committed using invalid data.
+
+The database becomes inconsistent.
+
+---
+
+## Memory Trick 🧠
+
+* **Read** → Allowed before T1 commits.
+* **Commit** → Wait until T1 commits.
+
+**Recoverable Schedule = "Read first if needed, but commit only after the transaction you depend on commits."**
+
+
 
 # Cascading Rollback
 
