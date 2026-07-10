@@ -2943,6 +2943,13 @@ Redo.
 
 ---
 
+### Trade-off of Immediate Update
+
+* ✅Can write dirty pages before commit, improving performance (batch writes are possible).
+* ❌If an uncommitted page reaches disk and the transaction aborts, **UNDO** is required.
+* ❌If a committed page hasn't reached disk before a crash, **REDO** is required.
+
+
 # Deferred Update
 
 Pages
@@ -3339,6 +3346,101 @@ were already completed.
 Huge waste of time.
 
 ---
+
+# Checkpoint, LSN, PageLSN & LogLSN
+
+## Log
+
+```text
+Log
+
+T1 Start
+
+T1 Update
+
+T2 Start
+
+T2 Update
+
+========== CHECKPOINT ==========
+
+Active Transactions:
+
+T1
+
+T2
+
+================================
+
+T1 Commit
+
+Crash
+```
+
+---
+
+**Checkpoint = Snapshot of the recovery state (active transactions + log position), not just the current transaction.**
+
+---
+
+**So check point is capture of state (what all are active transactions and curr log position to start from upon crash ! ideally this will be on top of all the ccurr active Transactions ).**
+
+---
+
+## LSN (Log Sequence Number) is:
+
+> A unique increasing number assigned to every log record, used to identify its position in the log and determine where recovery should start.
+
+---
+
+* ✅ **PageLSN =** The LSN of the latest log record whose changes are already applied to that page.
+
+* ✅ **LogLSN =** The LSN of the current log record being examined during recovery.
+
+---
+
+## The comparison:
+
+```text
+If PageLSN (in disk) >= LogLSN
+    → Skip REDO (already applied)
+
+Else
+    → REDO (page is missing this update)
+```
+
+---
+
+❌ It's not used to decide UNDO vs REDO.
+
+
+```text
+PIPELINE :
+
+Transaction
+      ↓
+RAM (Buffer Pool)
+      ↓
+Concurrency Control
+      ↓
+Dirty Pages
+      ↓
+WAL (Logs)
+      ↓
+COMMIT
+      ↓
+Background Writer
+      ↓
+Database Disk
+      ↓
+Crash?
+      ↓
+Checkpoint
+      ↓
+Recovery (Analysis → REDO → UNDO)
+
+```
+
 
 # Idea Behind Checkpoints
 
@@ -3823,39 +3925,32 @@ No Redo.
 
 ---
 
-# Advantages
+# Shadow Paging - Advantages, Disadvantages & Trade-offs
 
-- Very fast recovery.
-- No Undo Logs.
-- No Redo Logs.
-- Simple concept.
+## ✅ Advantages
+
+* Fast crash recovery (No UNDO / REDO required).
+* Commit is very fast (Only the root pointer is switched).
+* Original database remains unchanged until commit.
+* Simple recovery mechanism.
+
+---
+
+## ❌ Disadvantages
+
+* High disk I/O (Entire pages are copied even for small changes).
+* Disk fragmentation (New pages are scattered across the disk).
+* Higher disk storage usage (Old and new page copies coexist).
+* Poor scalability for very large databases.
+* Less efficient for small updates.
+* Requires garbage collection to reclaim old pages.
 
 ---
 
-# Disadvantages
+## ⚖️ Trade-off
 
-- Copying pages
-
-is expensive.
-- Poor scalability.
-- Fragmentation.
-- Difficult for
-
-very large databases.
-
-Because of these reasons,
-
-modern databases
-
-rarely use
-
-pure Shadow Paging.
-
-Log-Based Recovery
-
-is much more common.
-
----
+* **Advantage:** Very fast commit and crash recovery.
+* **Cost:** Expensive updates due to page copying, increased disk I/O, fragmentation, and storage overhead.
 
 # Comparison
 
