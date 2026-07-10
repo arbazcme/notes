@@ -15,6 +15,165 @@
 
 ---
 
+
+# PRE-REQ:
+
+# DBMS: Normal Execution, Logging & Recovery
+
+## 1. Normal Execution
+
+```text
+Database (Disk)
+        ↓
+Load Required Pages
+        ↓
+RAM (Buffer Pool)
+        ↓
+Transactions Read/Write Pages
+        ↓
+Concurrency Control (Locks / Timestamps)
+        ↓
+Dirty Pages
+        ↓
+Background Writer
+        ↓
+Database (Disk)
+```
+
+> **Key Idea:** Almost all reads, writes, and concurrency control happen on **pages in RAM**, not directly on disk.
+
+---
+
+# 2. Where Do Logs Fit?
+
+Whenever a transaction modifies a page:
+
+```text
+Modify RAM Page
+        ↓
+Create Log Record
+        ↓
+Write Log to Disk (Write-Ahead Logging - WAL)
+        ↓
+COMMIT
+        ↓
+Later, Background Writer writes Dirty Pages to Disk
+```
+
+### Important
+
+* ✅ Log reaches disk **before** the actual database page.
+* ✅ This guarantees crash recovery.
+
+---
+
+# 3. Crash Recovery Example
+
+### Before Crash
+
+```text
+RAM
+A = 200
+
+Disk
+A = 100
+
+Log
+A : 100 → 200
+COMMIT
+```
+
+Crash 💥
+
+RAM is lost.
+
+---
+
+### After Restart
+
+```text
+Disk
+A = 100
+
+Log
+A : 100 → 200
+COMMIT
+```
+
+Recovery Manager checks the log.
+
+Since **COMMIT** exists:
+
+```text
+REDO
+
+A = 200
+```
+
+Database becomes consistent again.
+
+---
+
+# 4. Final Mental Model
+
+```text
+Database (Disk)
+        ↓
+Load Pages
+        ↓
+RAM (Buffer Pool)
+        ↓
+Transactions Execute
+        ↓
+Concurrency Control
+        ↓
+Dirty Pages
+        ↓
+Write Logs to Disk (WAL)
+        ↓
+COMMIT
+        ↓
+Background Writer writes Dirty Pages to Database Disk
+```
+
+If a crash occurs **before dirty pages reach disk**, the **logs recover the database using REDO/UNDO**.
+
+---
+
+# 5. Concurrency in DBMS
+
+**Question:** Is all concurrency on pages in RAM?
+
+**Answer:** **Mostly Yes.**
+
+* Transactions operate on **data cached in RAM (Buffer Pool)**.
+* Locks or Timestamp checks are performed on these in-memory data items (rows/pages/tables).
+* The **disk is not involved in concurrency control**.
+* The disk only stores the **persistent copy** of the database.
+
+### Memory Trick 🧠
+
+```text
+Disk
+   ↓
+RAM (Buffer Pool)
+   ↓
+Concurrency Control
+   ↓
+Dirty Pages
+   ↓
+Logs → COMMIT
+   ↓
+Background Writer
+   ↓
+Disk
+```
+
+
+
+
+---
+
 # 1. Why Do We Need Recovery?
 
 So far,
