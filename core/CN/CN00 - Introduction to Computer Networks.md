@@ -1361,6 +1361,21 @@ its own information.
 
 ---
 
+```text
+IP Address
+↓
+Logical Address
+
+MAC Address
+↓
+Physical (Hardware) Address
+
+Port Number
+↓
+Process/Application Identifier
+
+```
+
 # Interview Revision
 
 ### Network
