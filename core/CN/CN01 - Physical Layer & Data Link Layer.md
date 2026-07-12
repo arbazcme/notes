@@ -2208,6 +2208,157 @@ Suppose device **A** wants to send data to device **E** in another network.
 
 ---
 
+# NAT (Network Address Translation)
+
+**NAT** is a technique used by a router to translate **private IP addresses** into a **public IP address** so devices in a private network can communicate with the Internet.
+
+Without NAT:
+- Private IPs (e.g., `192.168.x.x`) cannot be routed on the Internet.
+- Every device would need its own public IP.
+
+With NAT:
+- Many devices share **one public IP**.
+- The router keeps track of which response belongs to which device.
+
+---
+
+# Example
+
+## Laptop
+
+```text
+Private IP = 192.168.1.10
+```
+
+## Router
+
+```text
+Public IP = 49.207.100.5
+```
+
+Suppose you open Google.
+
+---
+
+## Step 1: Laptop sends a packet
+
+```text
+Source IP      = 192.168.1.10
+Source Port    = 52341
+
+Destination IP = Google's IP
+Destination Port = 443 (HTTPS)
+```
+
+---
+
+## Step 2: Router performs NAT
+
+The router changes the packet before sending it to the Internet.
+
+```text
+Source IP      = 49.207.100.5
+Source Port    = 60001
+
+Destination IP = Google's IP
+Destination Port = 443
+```
+
+At the same time, it stores a mapping in its **NAT Translation Table**.
+
+```text
+NAT Table
+
+49.207.100.5:60001
+        ↓
+192.168.1.10:52341
+```
+
+This mapping tells the router:
+
+> "If a packet comes back to `49.207.100.5:60001`, send it to `192.168.1.10:52341`."
+
+---
+
+## Step 3: Google replies
+
+Google only knows the router's public IP.
+
+It sends:
+
+```text
+Destination IP   = 49.207.100.5
+Destination Port = 60001
+```
+
+Google has **no knowledge** of your laptop's private IP.
+
+---
+
+## Step 4: Router checks the NAT table
+
+The router receives:
+
+```text
+49.207.100.5:60001
+```
+
+It looks up the NAT table:
+
+```text
+49.207.100.5:60001
+        ↓
+192.168.1.10:52341
+```
+
+The router then changes the destination back to:
+
+```text
+Destination IP   = 192.168.1.10
+Destination Port = 52341
+```
+
+and forwards the packet to the laptop.
+
+---
+
+# Why Ports Matter
+
+Suppose your home has three devices.
+
+```text
+Laptop : 192.168.1.10
+Phone  : 192.168.1.11
+TV     : 192.168.1.12
+```
+
+All three share **one public IP**.
+
+The router distinguishes them using **port numbers**.
+
+```text
+Public IP:Port             Private IP:Port
+
+49.207.100.5:60001   --->  192.168.1.10:52341
+49.207.100.5:60002   --->  192.168.1.11:49100
+49.207.100.5:60003   --->  192.168.1.12:53000
+```
+
+When responses arrive, the router checks the destination **port** and forwards each packet to the correct device.
+
+---
+
+# Key Points
+
+- **Private IPs** are used only inside the local network.
+- **Public IP** is visible on the Internet.
+- **Router performs NAT.**
+- **Router maintains a NAT Translation Table.**
+- NAT maps:
+  - **Private IP:Port ⇄ Public IP:Port**
+- This allows **multiple devices to share a single public IP address**.
+
+
 ## Why Both Public & Private IP?
 
 ### Public IP
