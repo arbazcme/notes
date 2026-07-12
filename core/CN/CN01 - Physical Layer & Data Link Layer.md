@@ -1880,6 +1880,22 @@ communication faster.
 
 ---
 
+# Switch vs Router & Hosts
+
+## Switch
+- Maintains a **MAC → Port** table.
+- **Floods** broadcast frames (e.g., ARP Requests) to all ports except the one it was received on.
+- Forwards unicast frames to the correct port using the MAC → Port table.
+
+> **Flooding** = Sending a frame to all ports except the incoming port.
+> Learn it in detail later when studying **Switching / Ethernet**.
+
+---
+
+## Router & Hosts
+- Maintain an **ARP Cache** (**IP → MAC**).
+- Use ARP to discover the MAC address corresponding to an IP address.
+
 # Interview Questions
 
 ### What does ARP do?
@@ -2113,6 +2129,31 @@ CRC
 - **Data** → Usually an IP Packet.
 - **CRC** → Error detection.
 
+
+```text
+A more accurate version is:
+
+Frame
+------
+Destination MAC  ← Next hop
+Source MAC
+Type
+Payload (IP Packet)
+CRC
+
+Inside the payload (the IP packet) are:
+
+IP Packet
+---------
+Source IP
+Destination IP
+TCP/UDP
+Application Data
+
+So the destination IP is not in the Ethernet header—it's inside the IP packet (the payload of the Ethernet frame).
+
+```
+
 ---
 
 ## Mental Model
@@ -2140,6 +2181,16 @@ using MAC Addresses.
 
 - **Switch** → Uses **MAC Addresses** for communication **within a local network (LAN)**.
 - **Router** → Uses **IP Addresses** to communicate **between different networks**.
+
+Switch:
+- MAC known → Forward to correct port.
+- ARP Request → Broadcast it.
+- ARP Reply → Forward it back.
+
+Host/Router:
+- Maintains ARP Cache (IP → MAC).
+
+Hub just broadcasts everytime and misses , MAC known → Forward to correct port. and broadcast even this , - ARP Reply → Forward it back.
 
 ---
 
