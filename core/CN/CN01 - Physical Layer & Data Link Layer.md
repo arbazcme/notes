@@ -2065,48 +2065,27 @@ calculations
 for SDE-1.
 
 ---
-
 # 8. Ethernet
 
-Ethernet
+Ethernet is the most widely used
 
-is
+**Data Link Layer technology**
 
-the most widely used
+for communication inside a
 
-technology
+**Local Area Network (LAN).**
 
-for
+Its main job is to
 
-Local Area Networks (LANs).
+encapsulate an IP Packet into an
 
-When
+**Ethernet Frame**
 
-computers
-
-communicate
-
-inside
-
-the same LAN,
-
-they usually
-
-exchange
-
-Ethernet Frames.
+so it can be transmitted over the local network.
 
 ---
 
 ## Ethernet Frame
-
-A Frame
-
-contains
-
-more than
-
-just data.
 
 ```text
 Destination MAC
@@ -2121,36 +2100,103 @@ Type
 
 ↓
 
-Data
+Data (IP Packet)
 
 ↓
 
 CRC
 ```
 
-Destination MAC
-
-tells
-
-where
-
-the Frame
-
-should go.
-
-Source MAC
-
-tells
-
-who sent it.
-
-CRC
-
-helps
-
-detect errors.
+- **Destination MAC** → Next device on the current LAN.
+- **Source MAC** → Sender's MAC Address.
+- **Type** → Type of data (e.g., IPv4, IPv6).
+- **Data** → Usually an IP Packet.
+- **CRC** → Error detection.
 
 ---
+
+## Mental Model
+
+```text
+IP
+↓
+
+Final Destination
+
+--------------------
+
+Ethernet
+↓
+
+Delivers the Packet
+to the next device
+on the current LAN
+using MAC Addresses.
+```
+
+# IP vs MAC - Mental Model
+
+## Core Idea
+
+- **Switch** → Uses **MAC Addresses** for communication **within a local network (LAN)**.
+- **Router** → Uses **IP Addresses** to communicate **between different networks**.
+
+---
+
+## How They Work Together
+
+Suppose device **A** wants to send data to device **E** in another network.
+
+1. A creates a packet with **Destination IP = E**.
+2. Router X forwards the packet towards Router Y using the **destination IP**.
+3. Router X **does not need E's MAC address**.
+4. Router Y receives the packet.
+5. Router Y sees that E's IP belongs to its local network.
+6. Router Y finds E's **MAC address** (using ARP).
+7. Router Y creates a frame with **Destination MAC = E** and delivers it.
+
+---
+
+## Why Both Public & Private IP?
+
+### Public IP
+- Identifies your **entire network** on the Internet.
+
+### Private IP
+- Identifies a **specific device** inside your local network.
+
+Without private IPs, the router wouldn't know **which local device** should receive the packet.
+
+---
+
+## MAC Address
+
+- Identifies the **actual network interface (hardware)**.
+- Used **only on the current local network (LAN)**.
+- MAC addresses **change at every hop**.
+
+---
+
+## Communication Flow
+
+```text
+Device ---- Switch ---- Router ---- Switch ---- Router ---- Switch ---- Device
+             MAC          IP          MAC         IP          MAC
+```
+
+Think of it as:
+
+- **Switch → "Which MAC should receive this frame?"**
+- **Router → "Which IP should this packet ultimately reach?"**
+
+---
+
+## One-Line Summary
+
+- 🌍 **Public IP** → Identifies your network on the Internet.
+- 🏠 **Private IP** → Identifies a device inside your network.
+- 💻 **MAC** → Used for final/local delivery on the current LAN.
+
 
 ## CSMA/CD (Idea)
 
