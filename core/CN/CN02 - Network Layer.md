@@ -3164,6 +3164,54 @@ the correct device.
 
 ---
 
+### NAT (Network Address Translation)
+
+## Step 1: Laptop sends a packet
+
+```text
+Source IP      = 192.168.1.10
+Source Port    = 52341
+
+Destination IP = Google's IP
+Destination Port = 443
+```
+
+---
+
+## Step 2: Router performs NAT
+
+The router replaces the **private IP** with its **public IP** and may also change the **source port**.
+
+```text
+Source IP      = 49.207.100.5
+Source Port    = 60001
+
+Destination IP = Google's IP
+Destination Port = 443
+```
+
+The router stores this mapping in its **NAT Translation Table**.
+
+```text
+49.207.100.5:60001
+        ↓
+192.168.1.10:52341
+```
+
+---
+
+## Step 3: Google replies
+
+Google sends the response to the router's **public IP** and **public port**.
+
+```text
+Destination IP   = 49.207.100.5
+Destination Port = 60001
+```
+
+The router looks up the NAT table, finds the corresponding **private IP** and **private port**, changes the packet back, and forwards it to the laptop.
+
+
 ## Why NAT Is Useful
 
 ```text
