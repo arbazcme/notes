@@ -92,6 +92,117 @@ Transport Layer.
 
 ---
 
+
+# NAT vs Transport Layer | Ports & Sockets
+
+## NAT (Router)
+- Exists **inside the router**.
+- Uses a **NAT table**.
+- Maps:
+  ```
+  Public IP:Port ↔ Private IP:Port
+  ```
+- Purpose: Forward packets to the correct **device**.
+- Does **not** know which application receives the packet.
+
+---
+
+## Transport Layer (Operating System)
+- Exists **inside the OS**.
+- Implements TCP/UDP.
+- Purpose:
+  - Create/manage sockets.
+  - Port → Socket lookup.
+  - Deliver packets to the correct application.
+  - (TCP) Reliability, retransmission, flow control, congestion control.
+
+---
+
+## Packet Flow
+
+```
+Internet
+    │
+    ▼
+Router (NAT)
+    │
+    ▼
+Laptop
+    │
+    ▼
+IP Layer
+(Is destination IP mine?)
+    │
+    ▼
+Transport Layer
+(Read destination port)
+    │
+    ▼
+Port → Socket Table
+    │
+    ▼
+Socket
+    │
+    ▼
+Application
+```
+
+---
+
+## Port
+- Just a **16-bit number**.
+- Identifies a communication endpoint.
+- Used by the OS to find the correct socket.
+
+Examples:
+- 80 → HTTP
+- 443 → HTTPS
+- 52345 → Ephemeral port
+
+---
+
+## Socket
+An **OS-managed communication endpoint**.
+
+Contains:
+- Local IP
+- Local Port
+- Remote IP
+- Remote Port
+- Protocol (TCP/UDP)
+- Connection State
+- Buffers
+- Reference to owning process
+
+Applications communicate through **sockets**, not ports.
+
+---
+
+## Relationship
+
+```
+Port
+ │
+ ▼
+Socket Table
+ │
+ ▼
+Socket
+ │
+ ▼
+Application
+```
+
+---
+
+## Interview Definitions
+
+**Port:** Numeric identifier used by the OS to locate sockets.
+
+**Socket:** OS-managed communication endpoint containing connection information and linked to an application.
+
+
+
 # 2. What is the Transport Layer?
 
 ## What is it?
@@ -772,6 +883,8 @@ one communication endpoint.
 
 ---
 
+
+
 # 6. Multiplexing & Demultiplexing
 
 ## What is it?
@@ -879,6 +992,139 @@ Many Apps
 ```
 
 ---
+
+
+# NIC (Network Interface) & Multiplexing
+
+## Network Interface (NIC)
+A **Network Interface Card (NIC)** is the hardware (or virtual hardware) that sends and receives packets.
+
+Examples:
+- Ethernet
+- Wi-Fi
+- Virtual NIC
+
+Think of it as the computer's **door to the network**.
+
+---
+
+## Outgoing Data
+
+```
+Applications
+     │
+Sockets
+     │
+Transport Layer
+     │
+IP Layer
+     │
+NIC
+     │
+Router
+```
+
+Applications write data to sockets.
+
+The Transport Layer converts the data into packets.
+
+The NIC transmits those packets.
+
+---
+
+## Multiplexing
+
+Many applications share **one NIC**.
+
+It **does not** combine data into one giant packet.
+
+Instead, packets are **interleaved**.
+
+Example:
+
+```
+Chrome Packet
+↓
+
+Spotify Packet
+↓
+
+Chrome Packet
+↓
+
+WhatsApp Packet
+↓
+
+VS Code Packet
+```
+
+The order depends on:
+- Data availability
+- Socket buffers
+- TCP state
+- Driver queues
+- OS scheduling
+
+It is **not** strict Round Robin.
+
+---
+
+## Demultiplexing
+
+Incoming packet:
+
+```
+NIC
+ │
+ ▼
+IP Layer
+ │
+ ▼
+Transport Layer
+ │
+(Read destination port)
+ │
+ ▼
+Socket
+ │
+ ▼
+Application
+```
+
+---
+
+## Mental Model
+
+### CPU
+
+```
+Many Threads
+     │
+     ▼
+One CPU
+```
+
+### Network
+
+```
+Many Applications
+      │
+      ▼
+One NIC
+```
+
+Both share one resource.
+
+- CPU → execution time
+- NIC → transmission of packets
+
+```text
+Conceptually, multiplexing is like Round Robin: multiple applications share one communication resource
+ so that all can make progress concurrently. However, the actual scheduling is not strict Round Robin;
+it depends on packet availability, TCP state, buffers, priorities, and the network driver.
+
+```
+
 
 # 7. TCP vs UDP (Overview)
 
@@ -1317,6 +1563,36 @@ Close Connection
 ```
 
 ---
+
+# TCP Checksum & Retransmission
+
+## Why TCP Checksum if Data Link Already Has One?
+
+**Data Link Checksum (CRC)**
+- Hop-to-hop.
+- Verified at every router.
+- New frame → New CRC.
+
+**TCP Checksum**
+- End-to-end.
+- Verified only by the destination.
+- Detects corruption across the entire path.
+
+---
+
+## Retransmission
+
+Receiver:
+- Checks sequence numbers.
+- If a segment is missing, it **does not retransmit**.
+- Sends ACKs indicating the last correctly received in-order data.
+
+Sender:
+- Detects the missing segment (duplicate ACKs or timeout).
+- **Retransmits** the missing segment.
+
+> **Retransmission is always initiated by the sender, not the receiver.**
+> 
 
 ## Why is TCP designed this way?
 
@@ -2383,6 +2659,11 @@ the network busy.
 ---
 
 ## Why is it designed this way?
+
+```text
+so simply there is wait timefor sending and gettin ack so when you send in window fashion the delay is reduced
+
+```
 
 The Internet
 
