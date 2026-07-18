@@ -3507,123 +3507,42 @@ UDP
 
 # 25. End-to-End Communication (Complete Picture)
 
-Suppose
-
-you open
-
-```text
-https://google.com
-```
-
-The communication
-
-looks like
-
 ```text
 Chrome
-
-↓
-
+      │
+      ▼
 Socket
-
-↓
-
+      │
+      ▼
 TCP
-
-↓
-
+(Add reliability)
+      │
+      ▼
 IP
-
-↓
-
+(Add source & destination IP addresses)
+      │
+      ▼
 Ethernet
-
-↓
-
-Physical Network
-
-↓
-
+(Add source & destination MAC addresses)
+      │
+      ▼
+NIC Driver
+(Tells the hardware what to transmit)
+      │
+      ▼
+NIC (Network Interface Card)
+(Converts bytes into electrical/radio/light signals)
+      │
+      ▼
+Cable / Wi-Fi
+      │
+      ▼
 Internet
 
-↓
+Network interface card, NIC driver to translate ! 
+NIC is actual hardware that is used to transfer data from A to B !
 
-Google Server
-
-↓
-
-Ethernet
-
-↓
-
-IP
-
-↓
-
-TCP
-
-↓
-
-Socket
-
-↓
-
-Google Application
 ```
-
-Each layer
-
-performs
-
-its own responsibility.
-
-```text
-Application
-
-↓
-
-Creates Data
-
---------------------
-
-Transport
-
-↓
-
-Ports
-
-Reliability
-
---------------------
-
-Network
-
-↓
-
-Routing
-
-IP Address
-
---------------------
-
-Data Link
-
-↓
-
-MAC Address
-
-Frame
-
---------------------
-
-Physical
-
-↓
-
-Bits
-```
-
----
 
 # 26. Quick Revision
 
@@ -4483,85 +4402,124 @@ Protect Network
 ```
 
 ---
+## 32. Buffers
 
-# 32. Buffers
+### What is a Buffer?
 
-## What is a Buffer?
+A **buffer** is a temporary area of memory maintained by the **Operating System** to hold data while it is waiting to be sent or received.
 
-A Buffer
-
-is a
-
-temporary memory
-
-used
-
-to store
-
-data
-
-before
-
-it is processed.
+It acts as a **waiting area** between the application and the network.
 
 ---
 
-## Why do we need Buffers?
+### Why are Buffers Needed?
 
-The sender
+Applications and networks do **not** operate at the same speed.
 
-and
+- An application may produce data faster than the network can send it.
+- The network may deliver data faster than the application can process it.
 
-receiver
-
-may operate
-
-at different speeds.
-
-Buffers
-
-temporarily
-
-store data
-
-until
-
-it can
-
-be processed.
+Buffers absorb this speed difference.
 
 ---
 
-## How does it work?
+### Send Buffer
 
-```text
-Network
+When an application calls:
 
-↓
-
-Receive Buffer
-
-↓
-
-Application
+```cpp
+send(sock, data, size);
 ```
 
-Similarly,
+the data is first copied into the **send buffer**.
 
-```text
+```
 Application
-
-↓
-
+      │
+      ▼
 Send Buffer
-
-↓
-
+      │
+      ▼
+TCP/IP Stack
+      │
+      ▼
 Network
 ```
 
+The OS then sends the data over the network whenever possible.
+
 ---
 
+### Receive Buffer
+
+When data arrives from the network, it is first stored in the **receive buffer**.
+
+```
+Network
+      │
+      ▼
+TCP/IP Stack
+      │
+      ▼
+Receive Buffer
+      │
+      ▼
+Application (recv())
+```
+
+The application reads the data whenever it is ready.
+
+---
+
+### Why are Buffers Important?
+
+Without buffers:
+
+- A fast application could overwhelm a slow network.
+- A fast network could overwhelm a busy application.
+- Data would be dropped frequently.
+
+Buffers allow both sides to work **independently** without requiring perfect synchronization.
+
+---
+
+### Simple Analogy
+
+Think of a buffer as a **waiting room**.
+
+```
+Application
+     │
+     ▼
+Waiting Room (Buffer)
+     │
+     ▼
+Network
+```
+
+or
+
+```
+Network
+     │
+     ▼
+Waiting Room (Buffer)
+     │
+     ▼
+Application
+```
+
+The waiting room temporarily holds data until the next stage is ready.
+
+---
+
+### Key Points
+
+- Buffers are **memory inside the Operating System**.
+- Every socket typically has a **send buffer** and a **receive buffer**.
+- Buffers temporarily store data.
+- They help handle differences in processing speed between applications and the network.
+- They improve performance and reduce packet loss caused by temporary speed mismatches.
 ## Why is it designed this way?
 
 Without buffers,
