@@ -34,6 +34,20 @@
 - [30. Why is the Application Layer Important?](#30-why-is-the-application-layer-important)
 
 
+
+```text
+app to -> application level protocols (WEb socket , http , etc)  provided by browser-> Transport layer (TCP or udp)
+for communication bw the other devide os through the endpoints (sockets) provided by os , over the internet,
+(network and datalink layer physical comes to transfer the data). the overall high level view
+
+Applications communicate using application-layer protocols (HTTP, WebSocket, etc.).
+They use sockets provided by the OS, which use TCP/UDP to communicate with the OS on the remote device.
+IP routes the packets across the Internet, while the Data Link and Physical layers transfer the actual data over each network link.
+
+TCP is implemented by both operating systems, but it provides an end-to-end communication service to the applications.
+```
+
+
 # 1. Why Do We Need the Application Layer?
 
 ## What is it?
@@ -2294,71 +2308,24 @@ many simultaneous requests.
 
 # 29. HTTP vs WebSocket
 
-## HTTP
 
 ```text
-Client
 
-↓
+Both HTTP and WebSocket use a TCP connection that is implemented by the OS but provides communication between applications.
 
-Request
+The real difference is:
 
-↓
+HTTP: Request/response protocol over TCP.
+WebSocket: Persistent, full-duplex protocol over the same TCP connection.
 
-Server
+So don't think of WebSocket as creating a "more complete" TCP connection. Think of it as using the same TCP connection in a different way.
 
-↓
-
-Response
-
-↓
-
-Finished
 ```
 
----
 
-## WebSocket
-
-```text
-Connection
-
-↓
-
-Open
-
-↓
-
-Both sides
-
-can send
-
-messages
-
-any time.
-```
-
----
-
-## Why?
-
-Applications
-
-like
-
-```text
-Chat
-
-Gaming
-
-Live Notifications
-```
-
-need
-
-real-time communication.
-
----
+Both HTTP and WebSocket provide end-to-end communication between applications using TCP. 
+HTTP follows a request-response model, whereas WebSocket keeps the TCP connection open, 
+allowing both the client and server to send messages to each other at any time.
 
 # 30. Why is the Application Layer Important?
 
