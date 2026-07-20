@@ -2,6 +2,37 @@
 
 # Navigation
 
+- [1. Why Do We Need the Application Layer?](#1-why-do-we-need-the-application-layer)
+- [2. What is the Application Layer?](#2-what-is-the-application-layer)
+- [3. Client-Server Model](#3-client-server-model)
+- [4. URL](#4-url)
+- [5. DNS](#5-dns)
+- [6. HTTP](#6-http)
+- [7. HTTPS](#7-https)
+- [8. Cookies](#8-cookies)
+- [9. Sessions](#9-sessions)
+- [10. JWT (Basics)](#10-jwt-basics)
+- [11. REST APIs](#11-rest-apis)
+- [12. Caching](#12-caching)
+- [13. SMTP](#13-smtp)
+- [14. FTP](#14-ftp)
+- [15. SSH](#15-ssh)
+- [16. HTTP Request](#16-http-request)
+- [17. HTTP Response](#17-http-response)
+- [18. HTTP Headers](#18-http-headers)
+- [19. Statelessness](#19-statelessness)
+- [20. Authentication vs Authorization](#20-authentication-vs-authorization)
+- [21. HTTP vs HTTPS](#21-http-vs-https)
+- [22. Common Interview Scenario](#22-common-interview-scenario)
+- [23. Browser vs Server](#23-browser-vs-server)
+- [24. REST API Example](#24-rest-api-example)
+- [25. API Endpoint](#25-api-endpoint)
+- [26. MIME Type](#26-mime-type)
+- [27. Persistent Connections](#27-persistent-connections)
+- [28. HTTP/1.1 vs HTTP/2 vs HTTP/3](#28-http11-vs-http2-vs-http3)
+- [29. HTTP vs WebSocket](#29-http-vs-websocket)
+- [30. Why is the Application Layer Important?](#30-why-is-the-application-layer-important)
+
 
 # 1. Why Do We Need the Application Layer?
 
@@ -2388,3 +2419,917 @@ would have
 no standard way
 
 to communicate.
+
+
+# TLS Handshake (Simple Beginner Explanation)
+
+## Before TLS
+
+Imagine
+
+you already know
+
+the server's IP address.
+
+```text
+google.com
+
+↓
+
+142.xx.xx.xx
+```
+
+The browser
+
+asks the OS
+
+to connect.
+
+```text
+Browser
+
+↓
+
+OS
+
+↓
+
+TCP Connection
+
+↓
+
+Server OS
+```
+
+After the TCP 3-way handshake,
+
+there is now
+
+a reliable connection.
+
+But...
+
+**it is NOT secure.**
+
+Anyone
+
+between you
+
+and the server
+
+could read the data.
+
+So,
+
+before sending
+
+the HTTP request,
+
+the browser says,
+
+> "Let's first make this connection secure."
+
+That process
+
+is called
+
+**TLS Handshake.**
+
+---
+
+# What is the goal of the TLS Handshake?
+
+The browser
+
+and server
+
+must solve
+
+three problems.
+
+```text
+1.
+
+Is this really Google?
+
+↓
+
+2.
+
+How can only we
+read the messages?
+
+↓
+
+3.
+
+How do we create
+a secret key
+without anyone stealing it?
+```
+
+If these are solved,
+
+communication becomes secure.
+
+---
+
+# What is Encryption?
+
+Suppose
+
+you want to send
+
+```
+Hello
+```
+
+Without encryption,
+
+everyone sees
+
+```
+Hello
+```
+
+With encryption,
+
+it becomes something like
+
+```
+8F92A71C...
+```
+
+Nobody can understand it.
+
+Only someone
+
+having the correct
+
+**key**
+
+can convert it back.
+
+---
+
+# What is a Key?
+
+A key
+
+is simply
+
+a secret value
+
+used for encryption
+
+and decryption.
+
+Think of it
+
+like
+
+a house key.
+
+```text
+Normal Message
+
+↓
+
+Encryption
+
++
+
+Secret Key
+
+↓
+
+Encrypted Message
+
+↓
+
+Decryption
+
++
+
+Same Secret Key
+
+↓
+
+Original Message
+```
+
+Without
+
+the correct key,
+
+the encrypted message
+
+is useless.
+
+---
+
+# What is a Certificate?
+
+Imagine
+
+someone says
+
+"I'm Google."
+
+How do you know
+
+they're telling the truth?
+
+Anyone
+
+could pretend
+
+to be Google.
+
+So,
+
+Google has
+
+a digital ID card.
+
+That ID card
+
+is called
+
+a **Certificate.**
+
+```text
+Google
+
+↓
+
+Certificate
+
+↓
+
+"I really am Google."
+```
+
+---
+
+# Who gives the Certificate?
+
+Not Google itself.
+
+A trusted organization
+
+called a
+
+**Certificate Authority (CA)**
+
+issues it.
+
+Think of it like
+
+a government
+
+issuing
+
+a passport.
+
+```text
+Government
+
+↓
+
+Passport
+
+↓
+
+Person
+```
+
+Similarly,
+
+```text
+Certificate Authority
+
+↓
+
+Certificate
+
+↓
+
+Google
+```
+
+Examples
+
+```text
+DigiCert
+
+Let's Encrypt
+
+GlobalSign
+```
+
+Browsers
+
+already trust
+
+these Certificate Authorities.
+
+---
+
+# What is inside a Certificate?
+
+A certificate
+
+contains things like
+
+```text
+Website Name
+
+↓
+
+google.com
+
+-------------------
+
+Public Key
+
+↓
+
+Used during encryption
+
+-------------------
+
+Expiry Date
+
+↓
+
+Valid Until
+
+-------------------
+
+CA Signature
+
+↓
+
+Proof that
+the certificate
+is genuine
+```
+
+---
+
+# What is a Public Key?
+
+Remember
+
+the browser
+
+needs
+
+a secret key
+
+to encrypt data.
+
+But
+
+how can
+
+the browser
+
+send
+
+that secret key
+
+to Google
+
+without anyone
+
+stealing it?
+
+It can't.
+
+So
+
+Google first sends
+
+something called
+
+a **Public Key.**
+
+Think of it
+
+like
+
+an open lock.
+
+Anyone
+
+can lock it,
+
+but
+
+only Google
+
+has the key
+
+to open it.
+
+```text
+Public Key
+
+↓
+
+Lock
+
+--------------------
+
+Private Key
+
+↓
+
+Unlock
+```
+
+Google
+
+keeps
+
+the Private Key
+
+secret forever.
+
+---
+
+# Why not just use the Public Key forever?
+
+Because
+
+public key encryption
+
+is slow.
+
+Very slow.
+
+Instead,
+
+it is used
+
+only once
+
+to safely create
+
+a shared secret.
+
+After that,
+
+both sides
+
+switch to
+
+a much faster
+
+secret key.
+
+---
+
+# What is a Shared Secret Key?
+
+After the handshake,
+
+both
+
+Browser
+
+and
+
+Server
+
+have
+
+the exact same
+
+secret key.
+
+```text
+Browser
+
+↓
+
+Secret Key
+
+ABCDEFG
+
+====================
+
+Server
+
+↓
+
+Secret Key
+
+ABCDEFG
+```
+
+Nobody else
+
+knows this key.
+
+Now
+
+both sides
+
+can encrypt
+
+and decrypt
+
+very quickly.
+
+---
+
+# Complete TLS Handshake
+
+## Step 1
+
+ClientHello
+
+```text
+Browser
+
+↓
+
+Server
+```
+
+The browser says
+
+```text
+Hello!
+
+I want a secure connection.
+
+Here are
+
+the encryption methods
+
+I support.
+```
+
+---
+
+## Step 2
+
+ServerHello
+
+```text
+Server
+
+↓
+
+Browser
+```
+
+The server replies
+
+```text
+Okay.
+
+Let's use
+
+this encryption method.
+```
+
+Now
+
+both sides
+
+agree
+
+how
+
+they will encrypt data.
+
+---
+
+## Step 3
+
+Certificate
+
+```text
+Server
+
+↓
+
+Browser
+```
+
+The server sends
+
+its certificate.
+
+```text
+Server
+
+↓
+
+Certificate
+
+↓
+
+Browser
+```
+
+The browser checks
+
+```text
+Is this certificate
+
+valid?
+
+↓
+
+Is it signed
+
+by a trusted
+
+Certificate Authority?
+
+↓
+
+Is it expired?
+
+↓
+
+Does it belong
+
+to google.com?
+```
+
+If any answer
+
+is No,
+
+the browser
+
+shows
+
+a security warning.
+
+---
+
+## Step 4
+
+Create the Shared Secret
+
+Now
+
+the browser
+
+creates
+
+a random
+
+secret key.
+
+```text
+Random Secret
+
+↓
+
+ABCD1234
+```
+
+The browser
+
+locks
+
+this secret
+
+using
+
+Google's
+
+Public Key.
+
+```text
+Secret Key
+
+↓
+
+Encrypt using
+
+Google's Public Key
+
+↓
+
+Send to Google
+```
+
+Even if
+
+someone
+
+captures this,
+
+they cannot
+
+open it.
+
+Only Google
+
+has
+
+the Private Key
+
+needed
+
+to unlock it.
+
+---
+
+## Step 5
+
+Server Unlocks It
+
+Google
+
+uses
+
+its Private Key.
+
+```text
+Encrypted Secret
+
+↓
+
+Private Key
+
+↓
+
+Original Secret
+
+↓
+
+ABCD1234
+```
+
+Now
+
+both
+
+Browser
+
+and
+
+Google
+
+know
+
+the same
+
+secret key.
+
+---
+
+# Secure Connection Ready
+
+Now
+
+the TLS Handshake
+
+is finished.
+
+```text
+Browser
+
+↓
+
+Secret Key
+
+ABCDEFG
+
+==========================
+
+Server
+
+↓
+
+Secret Key
+
+ABCDEFG
+```
+
+From now on,
+
+every HTTP request
+
+is encrypted
+
+using
+
+this shared secret key.
+
+---
+
+# Now the HTTP Request Starts
+
+```text
+HTTP Request
+
+↓
+
+TLS
+
+Encrypt
+
+↓
+
+TCP
+
+↓
+
+IP
+
+↓
+
+Internet
+
+↓
+
+IP
+
+↓
+
+TCP
+
+↓
+
+TLS
+
+Decrypt
+
+↓
+
+HTTP
+
+↓
+
+Server
+```
+
+The routers
+
+only see
+
+encrypted bytes.
+
+They never see
+
+```http
+GET /login
+
+username=alice
+
+password=123456
+```
+
+Only
+
+the browser
+
+and
+
+the server
+
+can read
+
+the original message.
+
+---
+
+# Simple Mental Model
+
+```text
+TCP
+
+↓
+
+Builds a reliable road.
+
+-------------------------
+
+TLS
+
+↓
+
+Puts a locked tunnel
+on that road.
+
+-------------------------
+
+HTTP
+
+↓
+
+Sends messages
+through the locked tunnel.
+```
