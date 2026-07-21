@@ -1,6 +1,26 @@
 # CN05 & CN06 - Modern Backend Networking (Final)
 
----# 1. Reverse Proxy
+# Navbar
+
+- [1. Reverse Proxy](#1-reverse-proxy)
+- [2. Load Balancer](#2-load-balancer)
+- [3. CDN](#3-cdn)
+- [4. Proxy vs Reverse Proxy](#4-proxy-vs-reverse-proxy)
+- [5. WebSocket](#5-websocket)
+- [6. Browser → Backend (Complete Flow)](#6-browser--backend-complete-flow)
+- [8. Redis (Networking View)](#8-redis-networking-view)
+- [9. Why Backend Companies Use This Architecture](#9-why-backend-companies-use-this-architecture)
+- [10. Same-Origin Policy (SOP)](#10-same-origin-policy-sop)
+- [11. CORS](#11-cors)
+- [12. Stateless vs Stateful](#12-stateless-vs-stateful)
+- [13. Idempotency](#13-idempotency)
+- [14. Polling vs Long Polling vs WebSocket](#14-polling-vs-long-polling-vs-websocket)
+- [15. Keep-Alive](#15-keep-alive)
+- [16. API Gateway](#16-api-gateway)
+- [17. Microservices (Networking View)](#17-microservices-networking-view)
+- [18. gRPC](#18-grpc)
+- [19. Common Interview Questions](#19-common-interview-questions)
+
 
 ## Imagine this
 
