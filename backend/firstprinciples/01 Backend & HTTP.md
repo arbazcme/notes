@@ -448,6 +448,57 @@ Frontend code executes on the user's device.
 
 Backend code executes on the server.
 
+
+
+# HTTP vs WebSocket
+
+## HTTP
+- Request → Response → End
+- Stateless
+- Best for CRUD APIs (login, register, payments, uploads)
+- Easy to scale
+- Sends HTTP headers with every request
+- Real-time requires **polling**
+
+## WebSocket
+- Persistent connection
+- Full-duplex (client & server can send anytime)
+- Best for real-time apps (chat, games, notifications)
+- HTTP headers only during initial handshake
+- No polling, server pushes updates instantly
+- Keeps connections open → more memory & harder to scale
+
+---
+
+## Tradeoff
+
+| HTTP | WebSocket |
+|------|-----------|
+| Request/Response | Persistent Connection |
+| Stateless | Stateful (connection) |
+| Easy to scale | Harder to scale |
+| Header on every request | Header only once |
+| Polling for real-time | Instant server push |
+| CRUD APIs | Real-time communication |
+
+---
+
+## Use
+
+**HTTP:** Login, Register, REST APIs, CRUD, Payments, Uploads
+
+**WebSocket:** Chat, Notifications, Live Dashboards, Games, Collaborative Apps
+
+---
+
+## Golden Line
+
+**HTTP is optimized for simple request-response communication, while WebSocket is optimized for persistent, bidirectional, real-time communication.**
+
+
+
+
+
 * 5. Understanding HTTP for backend engineers, where it all starts *
 
 ### 1. Core Principles of HTTP
