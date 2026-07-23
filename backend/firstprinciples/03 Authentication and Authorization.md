@@ -2790,3 +2790,340 @@ Authentication identifies **who you are**.
 Authorization determines **what you are allowed to do**.
 
 Together, they form the foundation of security in modern web applications.
+
+
+# Authentication & Authorization Revision
+
+---
+
+# 1. OAuth (Authorization)
+
+## What problem does OAuth solve?
+
+Without OAuth:
+
+User → Gives Google password → Your App ❌
+
+Bad because your app should never know the user's Google password.
+
+OAuth solves this.
+
+User logs into Google directly.
+
+Google asks:
+
+"Allow this app to access your data?"
+
+If the user accepts,
+
+Google returns an **Access Token**.
+
+Your app uses the Access Token to access the allowed Google resources.
+
+Example:
+
+Your App
+↓
+Redirect to Google
+↓
+User logs into Google
+↓
+User grants permission
+↓
+Google returns Access Token
+↓
+Your App accesses user's email/profile
+
+### Remember
+
+- OAuth = Authorization
+- Grants permission to access resources
+- Does NOT tell your app who the user is
+
+---
+
+# 2. OIDC (OpenID Connect)
+
+Problem:
+
+OAuth gives permission,
+
+but it doesn't tell your app who the user is.
+
+OIDC solves this.
+
+OIDC = OAuth + Identity.
+
+Google returns:
+
+- Access Token
+- ID Token (JWT)
+
+The ID Token contains:
+
+- User ID
+- Name
+- Email
+
+Now your app knows who logged in.
+
+### Remember
+
+OAuth → What can this app access?
+
+OIDC → Who is this user?
+
+Login with Google = OIDC
+
+---
+
+# 3. Which Authentication Should I Choose?
+
+## Traditional Website
+
+Examples:
+
+- Banking
+- ERP
+- Admin Dashboard
+
+Use:
+
+- Sessions
+- Cookies
+
+Reason:
+
+Easy logout, browser friendly.
+
+---
+
+## REST APIs
+
+Examples:
+
+- Mobile Apps
+- React + Backend
+
+Use:
+
+- JWT
+- Refresh Token (Hybrid)
+
+Reason:
+
+Fast, scalable, stateless.
+
+---
+
+## Microservices
+
+Use:
+
+- JWT
+
+Reason:
+
+Each service verifies JWT locally.
+
+---
+
+## Login with Google
+
+Use:
+
+- OIDC
+
+---
+
+## Public APIs
+
+Examples:
+
+- OpenAI
+- Stripe
+- Google Maps
+
+Use:
+
+- API Keys
+
+Reason:
+
+Authenticate applications, not users.
+
+---
+
+# 4. Authorization
+
+Authentication answers:
+
+"Who are you?"
+
+Authorization answers:
+
+"What are you allowed to do?"
+
+Example:
+
+User logs in
+↓
+Authenticated
+↓
+Check role
+↓
+Allow or Deny
+
+Example:
+
+Student
+✓ View Courses
+✗ Delete Users
+
+Admin
+✓ Everything
+
+---
+
+## RBAC (Role-Based Access Control)
+
+Roles:
+
+- Admin
+- Teacher
+- Student
+
+Permissions depend on role.
+
+Most applications use RBAC.
+
+---
+
+# 5. Error Messages
+
+Never reveal what was wrong.
+
+❌ Username doesn't exist.
+
+❌ Wrong password.
+
+These help attackers.
+
+Always return:
+
+✅ Invalid username or password.
+
+---
+
+# 6. Timing Attacks
+
+Bad implementation:
+
+Wrong username → 5 ms
+
+Wrong password → 40 ms
+
+Attacker measures response time and learns whether a username exists.
+
+Solution:
+
+Always perform roughly the same amount of work before responding.
+
+Return generic errors.
+
+Both requests should take nearly the same time.
+
+---
+
+# Quick Revision
+
+## Authentication
+
+Who are you?
+
+---
+
+## Authorization
+
+What are you allowed to do?
+
+---
+
+## Sessions
+
+- Stateful
+- Server stores session
+- Easy logout
+
+Best for traditional websites.
+
+---
+
+## JWT
+
+- Stateless
+- Server stores nothing
+- Fast
+- Cannot revoke instantly
+
+Best for APIs.
+
+---
+
+## Hybrid (Recommended)
+
+Access Token (JWT)
+
+- Short-lived
+- Sent on every request
+
+Refresh Token
+
+- Long-lived
+- Stored in Redis/DB
+- Creates new JWT
+- Can be revoked
+
+Best of both worlds.
+
+---
+
+## API Key
+
+Used by applications/services.
+
+Not for user login.
+
+---
+
+## OAuth
+
+Permission to access another application's resources.
+
+---
+
+## OIDC
+
+OAuth + User Identity.
+
+Used for "Login with Google."
+
+---
+
+## Golden Interview Line
+
+Authentication = Verify Identity.
+
+Authorization = Verify Permissions.
+
+OAuth = Permission.
+
+OIDC = Login.
+
+Session = Stateful.
+
+JWT = Stateless.
+
+Hybrid = JWT + Refresh Token.
+
+API Key = Application Authentication.
