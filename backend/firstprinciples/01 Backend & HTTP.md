@@ -573,6 +573,21 @@ Browsers enforce a Same-Origin Policy, blocking web apps from making requests to
     *   The server replies with a 204 No Content status, explicitly listing allowed origins, methods, headers, and a max-age to cache this configuration. 
     *   If successful, the browser then sends the actual, original request.
 
+
+```text
+It is checking:
+
+✅ Is this Origin allowed?
+✅ Is this HTTP Method allowed?
+✅ Are these Headers allowed?
+
+If the answer is No, the browser blocks the request before it is ever sent.
+
+One-line note for your notes
+Preflight (OPTIONS) is a browser permission check before a non-simple CORS request.
+It asks the server whether the requested Origin, HTTP method, and headers are allowed—not whether the route exists.
+```
+
 ### 7. Standardized Status Codes
 Status codes are three-digit numbers that act as a universal language to indicate the outcome of a request.
 *   1xx (Informational): Indicates headers received; client can proceed (e.g., 100 Continue for large uploads).
@@ -603,6 +618,27 @@ Caching reuses previously downloaded responses to save bandwidth and load times.
 *   When a client first fetches a resource, the server responds with the payload alongside three headers: Cache-Control (sets max duration), ETag (a unique hash of the payload), and Last-Modified.
 *   On subsequent requests, the client sends conditional headers: If-None-Match (carrying the ETag) or If-Modified-Since.
 *   If the data on the server hasn't changed, the server saves bandwidth by sending an empty 304 Not Modified response, instructing the browser to use its cached copy. If it has changed, it sends a 200 OK with the new data and a new ETag.
+
+```text
+
+Server sends:
+- Data
+- Cache-Control → Tells the browser how long it can keep the data in its cache.
+- ETag → A unique version/hash of the data.
+
+Later:
+- Browser sends the ETag back to ask, "Has this data changed?"
+
+If the data hasn't changed:
+- Server → 304 Not Modified
+- Browser uses its cached copy.
+
+If the data has changed:
+- Server → 200 OK + New Data + New ETag
+- Browser replaces the old cached data.
+
+```
+
 
 ### 9. Content Negotiation and Compression
 Clients and servers can negotiate the best format to exchange data.
