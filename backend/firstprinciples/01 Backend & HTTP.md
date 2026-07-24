@@ -483,6 +483,32 @@ Backend code executes on the server.
 
 ---
 
+```text
+HTTP: "Use the TCP connection for one request, then throw it away."
+WebSocket: "Keep the same TCP connection alive, so either side can send messages anytime."
+
+The trade-off is simple:
+
+HTTP wastes connection setup for every request but uses very little memory.
+WebSocket avoids repeated setup and enables instant communication, but uses more server RAM and
+connection-management resources because every connected client must stay in memory until they disconnect.
+
+
+When server wants to send data in http, the connection is already closed it cant, in web socket when server
+recieves the data the os has to maintain who(client) established this connection and to which connection i have to send
+back this data(this is where the os resourses are used it has to remember/maintain the info )
+
+HTTP:
+- Request → Response → Connection closes.
+- Server cannot send data later because the connection no longer exists.
+
+WebSocket:
+- Connection stays open.
+- OS keeps information about every connected client (socket).
+- Since the connection already exists, the server can send data to that client anytime.
+- Cost: More RAM and some CPU are needed to maintain many open connections.
+```
+
 ## Use
 
 **HTTP:** Login, Register, REST APIs, CRUD, Payments, Uploads
