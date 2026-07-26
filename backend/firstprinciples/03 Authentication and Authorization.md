@@ -1568,6 +1568,18 @@ Without centralized storage:
 
 Authentication breaks.
 
+```text
+           Load Balancer
+          /     |      \
+         ▼      ▼       ▼
+    Server A Server B Server C
+         \      |      /
+          ▼     ▼     ▼
+             Redis
+Increasing servers "computation" to handle users
+
+```
+
 ---
 
 ## Session Replication
