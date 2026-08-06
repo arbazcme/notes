@@ -3560,7 +3560,6 @@ used incorrect data.
 
 
 
-
 # Recoverable Schedule
 
 Rule
@@ -3590,6 +3589,10 @@ This is called
 a Recoverable Schedule.
 
 ---
+
+```text
+so its a tradeoff , we are not assuming the worst case for maximum concurrency
+```
 
 # Example
 
