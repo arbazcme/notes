@@ -2666,6 +2666,15 @@ to execute transactions
 
 in timestamp order.
 
+
+
+
+# Both solve the same 2pl vs time stamp its trade off bw cost of Waiting vs Restarting
+
+if waiting is cheap then restarting -> 2pl
+if restating is cheap insted of waiting -> TS
+
+
 ---
 
 # Real-Life Analogy
