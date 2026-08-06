@@ -3506,6 +3506,16 @@ of concurrency control
 
 and is one of the most important DBMS interview topics.
 
+```text
+So, it is basically conflict serializability means whenever there is a conflict, whenever there is a conflict,
+the output, the result of a transaction should be like if they are executing serially.
+That's what conflict serializability means. And in timestamp ordering, whenever there is a conflict,
+again I am going to tell that, whenever there is a conflict, the lower timestamp would be there and the higher
+timestamp would be just aborted so that the order is preserved.
+
+```
+
+
 # 7. Recoverable Schedules
 
 Transactions
