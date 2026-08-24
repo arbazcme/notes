@@ -4496,118 +4496,6 @@ Since many independent B+ Trees can point to the same table, **multiple Non-Clus
 | Search reaches leaf and immediately gets the row | Search reaches leaf, then follows the pointer to the actual row |
 
 
-
-
-# DBMS Indexing — Key Points
-
-## Primary vs Secondary Index
-
-### Primary Index
-- Index built on the **primary key**.
-- Primary key values are **unique**.
-- Each indexed key identifies one record.
-
-### Secondary Index
-- Index built on a **non-primary-key column**.
-- The column can contain **duplicate values**.
-- Therefore, one indexed value can map to **multiple records**.
-
-### Mental Model
-
-```text
-Primary:
-primary key → one record
-
-Secondary:
-other column value → one or more records
-```
-
----
-
-# Sparse Index
-
-A sparse index stores only **some index entries**, not an entry for every record.
-
-### Key Requirement
-
-> **Sparse indexing depends on the records being ordered by the indexed column.**
-
-Example:
-
-```text
-Data:
-10
-20
-30
-40
-
-Sparse index:
-10 → location
-30 → location
-```
-
-To find `20`:
-
-```text
-find 10 in index
-      ↓
-know 20 must come after 10
-      ↓
-search the data from there
-```
-
-So:
-
-> **Sparse index requires ordered data records by the index key.**
-
----
-
-# B-Tree vs B+ Tree
-
-## B-Tree
-
-- Internal nodes can contain **keys + record pointers**.
-- Search can finish at an **intermediate/internal node**.
-
-## B+ Tree
-
-- Internal nodes contain **keys + child pointers**.
-- Actual record/data pointers are stored at the **leaf level**.
-- Leaf nodes are **linked**.
-- Linked leaves make **range queries/sequential traversal easier**.
-- Internal nodes can generally hold more keys/children because they don't store record pointers, which can reduce tree height.
-
-### Mental Model
-
-```text
-B-Tree:
-root/internal node
-   ↓
-key + record pointer
-   ↓
-search may finish here
-
-B+ Tree:
-root/internal nodes
-   ↓
-keys + child pointers
-   ↓
-leaf nodes
-   ↓
-record/data pointers
-```
-
-### Simple Comparison
-
-> **B-Tree → data can exist at different levels**  
-> **B+ Tree → data/record pointers are at leaves**
-
-For database indexing:
-
-> **B+ Tree is generally preferred, especially for range queries and efficient page-based access.**
-
----
-
 # Clustered vs Non-Clustered Index
 
 ## Clustered Index
@@ -4682,6 +4570,8 @@ Better:
 > **The main benefit of a clustered index is how the table data is organized for efficient access.**
 
 Storage can be a benefit, but **query performance and access pattern are the main considerations**.
+
+
 
 
 # Frequently Asked Interview Questions
