@@ -12,6 +12,121 @@
 
 ---
 
+# Interview Questions 
+# CN — My Doubts & Answers
+
+## Q1. TCP connection is established between whom?
+
+**Client OS TCP ↔ Server OS TCP**
+
+The application does not directly implement TCP.
+
+```text
+Client App
+   ↕ socket
+Client OS TCP
+   ↕
+Network / Routers
+   ↕
+Server OS TCP
+   ↕ socket
+Server App
+```
+
+---
+
+## Q2. If TCP handshake packets also travel through routers, how are they different from actual data?
+
+Both travel through the same routers.
+
+- **Handshake packets** → establish TCP state between the two endpoint OSes.
+- **After connection** → TCP uses that established state to carry application data.
+
+```text
+Handshake:
+"Let's establish a TCP connection."
+
+After handshake:
+"Use that established connection to carry my bytes."
+```
+
+---
+
+## Q3. If TCP receives A, B, D but C is missing, what does the application receive?
+
+```text
+A ✅
+B ✅
+C ❌
+D ✅
+```
+
+TCP can give **A and B** to the application.
+
+It **buffers D** and waits for C/retransmission.
+
+```text
+A → app ✅
+B → app ✅
+C → waiting
+D → buffered
+
+C arrives
+↓
+D → app
+```
+
+So TCP does **not** give `A B D` and later `C`.
+
+---
+
+## Q4. Is TCP basically state established between two OSes?
+
+**YES.**
+
+```text
+Client OS TCP
+      ↕
+  TCP connection/state
+      ↕
+Server OS TCP
+```
+
+Applications access this through sockets.
+
+---
+
+## Q5. Socket vs WebSocket
+
+**YES, different concepts.**
+
+- **Socket** → OS-level communication endpoint exposed to the application.
+- **WebSocket** → application-level protocol for persistent two-way communication.
+
+WebSocket ultimately uses the underlying networking/socket mechanisms.
+
+---
+
+## Q6. My TCP mental model
+
+**Correct for interview breadth:**
+
+```text
+App
+ ↓ socket
+OS TCP
+ ↓
+network / routers
+ ↓
+OS TCP
+ ↓ socket
+App
+```
+
+The important distinction is:
+
+> **Application ↔ OS through socket; TCP connection/state ↔ endpoint OS TCP stacks.**
+
 # 1. Why Do We Need the Transport Layer?
 
 So far,
